@@ -166,7 +166,7 @@ export default function FullProfile() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label>Username</Label>
-              <Input value={form.username} disabled />
+              <Input value={form.username} disabled={!isEditing} />
             </div>
 
             <div>
@@ -206,7 +206,7 @@ export default function FullProfile() {
                   name="full_name"
                   value={form.full_name}
                   onChange={handleChange}
-                  disabled={!isEditing}
+                  disabled
                   placeholder="Enter your legal name"
                 />
               </div>
@@ -217,7 +217,7 @@ export default function FullProfile() {
                   name="id_number"
                   value={form.id_number}
                   onChange={handleChange}
-                  disabled={!isEditing}
+                  disabled
                   placeholder="National ID / Passport"
                 />
               </div>

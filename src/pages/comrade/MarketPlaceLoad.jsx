@@ -5,7 +5,7 @@ export default function MarketPlaceLoad() {
   useEffect(() => {
     // Redirect AFTER animations + text display
     const timer = setTimeout(() => {
-      window.open("https://swapspot-pink.vercel.app/", "_blank");
+      window.open("https://swapspot-pink.vercel.app/", "_blank");   //could change with window.location
     }, 8000); // 5s merge + 5s text
 
     return () => clearTimeout(timer);
