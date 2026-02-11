@@ -1,0 +1,14 @@
+User-agent: *
+Disallow: /signin
+Disallow: /signup
+Disallow: /landlord-dashboard
+Disallow: /full-profile
+Disallow: /plans
+Disallow: /verify-account
+Disallow: /auth-redirect
+Disallow: /otp-verification
+Disallow: /mpesa
+
+Allow: /
+
+Sitemap: https://campushub-website.vercel.app/sitemap.xml
