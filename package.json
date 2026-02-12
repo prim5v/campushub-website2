@@ -6,6 +6,7 @@
   "scripts": {
     "dev:client": "vite",
     "dev": "cross-env NODE_ENV=development node server/index.js",
+    "generate-jsonld": "node scripts/generateListingsJSONLD.js",
     "build": "vite build",
     "start": "cross-env NODE_ENV=production node dist/index.js",
     "check": "echo 'No TypeScript, skipping type check'",

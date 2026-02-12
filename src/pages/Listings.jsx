@@ -14,6 +14,7 @@ import { ApiSocket} from "@/utils/ApiSocket";
 import SkeletonLoading from "@/components/SkeletonLoading";
 import CountdownBanner from "@/components/CountdownBanner";
 import { Helmet } from "react-helmet"; // make sure you have react-helmet installed
+import listingsJSON from "../../public/listings.json";
 import { 
   Search, 
   SlidersHorizontal, 
@@ -236,7 +237,7 @@ const generateListingsJSONLD = () => {
       {allRooms.length > 0 && (
   <Helmet>
     <script type="application/ld+json">
-      {JSON.stringify(generateListingsJSONLD())}
+      {JSON.stringify(listingsJSON)}
     </script>
   </Helmet>
 )}
