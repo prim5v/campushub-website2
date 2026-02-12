@@ -13,6 +13,7 @@ import LoadingScreen from "@/pages/Auth/LoadingScreen"
 import { ApiSocket} from "@/utils/ApiSocket";
 import SkeletonLoading from "@/components/SkeletonLoading";
 import CountdownBanner from "@/components/CountdownBanner";
+import { Helmet } from "react-helmet"; // make sure you have react-helmet installed
 import { 
   Search, 
   SlidersHorizontal, 
@@ -166,7 +167,9 @@ useEffect(() => {
 
           distance: formatDistance(l.distance),
 
-          image: l.images?.[0] || "/placeholder.jpg",
+          // image: l.images?.[0] || "/placeholder.jpg",
+          image: l.images?.[0] || "https://campushub-website.vercel.app/placeholder.jpg",
+
 
           amenities: Array.isArray(l.amenities)
             ? l.amenities.map(a => a.name || a.label || String(a))
@@ -201,8 +204,43 @@ useEffect(() => {
 
 
 
+
+const generateListingsJSONLD = () => {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "itemListElement": allRooms.map((room, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "url": `https://campushub-website.vercel.app/room/${room.id}`,
+      "item": {
+        "@type": "Product",
+        "name": room.title,
+        "image": room.image,
+        "description": `Verified ${room.type} near campus at ${room.location}`,
+        "offers": {
+          "@type": "Offer",
+          "price": room.price,
+          "priceCurrency": "KES",
+          "availability": "https://schema.org/InStock"
+        }
+      }
+    }))
+  };
+};
+
+
+
   return (
     <div className="min-h-screen bg-background">
+      {allRooms.length > 0 && (
+  <Helmet>
+    <script type="application/ld+json">
+      {JSON.stringify(generateListingsJSONLD())}
+    </script>
+  </Helmet>
+)}
+
       <Navbar />
 
       
