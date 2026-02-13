@@ -84,47 +84,7 @@ export default function Home() {
    const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
    const [favorites, setFavorites] = useState([]);
 
-   const [featuredRooms, setFeaturedRooms] = useState([
-      {
-    id: "1",
-    title: "Modern Bedsitter Near University",
-    type: "Bedsitter",
-    price: 8500,
-    location: "Langata Road",
-    distance: "500m",
-    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600",
-    amenities: ["WiFi", "Water", "Electricity"],
-    verified: true,
-    rating: 4.8,
-    reviews: 24,
-  },
-  {
-    id: "2",
-    title: "Spacious Single Room with Balcony",
-    type: "Single Room",
-    price: 6000,
-    location: "Kibera Drive",
-    distance: "800m",
-    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600",
-    amenities: ["Water", "Electricity"],
-    verified: true,
-    rating: 4.5,
-    reviews: 18,
-  },
-  {
-    id: "3",
-    title: "Cozy 1-Bedroom Apartment",
-    type: "1 Bedroom",
-    price: 15000,
-    location: "Nairobi West",
-    distance: "1.2km",
-    image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600",
-    amenities: ["WiFi", "Water", "Electricity"],
-    verified: false,
-    rating: 4.2,
-    reviews: 12,
-  },
-   ])
+   const [featuredRooms, setFeaturedRooms] = useState([])
     const FAVORITES_KEY = "campushub_favorites";
 
       const getLocalFavorites = () => {

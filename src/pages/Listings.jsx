@@ -42,6 +42,7 @@ export default function Listings() {
   const [sortBy, setSortBy] = useState("recommended");
   const [favorites, setFavorites] = useState([]);
 
+
   
 
   const FAVORITES_KEY = "campushub_favorites";
@@ -248,9 +249,10 @@ useEffect(() => {
 
       
   {/* Show banner only if there are no listings */}
-  {filteredRooms.length === 0 && <CountdownBanner durationDays={7} />}
+  {/* and loading is false */}
+  {filteredRooms.length === 0 && !loading && <CountdownBanner durationDays={7} />}
 
-  {allRooms.length === 0 && <CountdownBanner durationDays={7} />}    
+  {allRooms.length === 0 && !loading && <CountdownBanner durationDays={7} />}    
   
       <main className="pt-20 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
