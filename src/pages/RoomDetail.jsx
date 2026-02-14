@@ -280,33 +280,18 @@ const formatKenyanPhoneForWhatsApp = (phone) => {
   return cleaned;
 };
 
-// const handleShare = () => {
-//   const roomUrl = window.location.href; // Current page URL
-
-//   if (navigator.share) {
-//     // Native Web Share API (mobile-friendly)
-//     navigator.share({
-//       title: roomData.title,
-//       text: `Check out this listing on CampusHub: ${roomData.title}`,
-//       url: roomUrl,
-//     }).catch(console.error);
-//   } else {
-//     // Fallback: copy URL to clipboard
-//     navigator.clipboard.writeText(roomUrl)
-//       .then(() => alert("Link copied to clipboard!"))
-//       .catch(() => alert("Failed to copy link"));
-//   }
-// };
 const handleShare = () => {
-  const roomUrl = window.location.href;
+  const roomUrl = window.location.href; // Current page URL
 
   if (navigator.share) {
+    // Native Web Share API (mobile-friendly)
     navigator.share({
       title: roomData.title,
-      text: roomData.description,
+      text: `Check out this listing on CampusHub: ${roomData.title}`,
       url: roomUrl,
     }).catch(console.error);
   } else {
+    // Fallback: copy URL to clipboard
     navigator.clipboard.writeText(roomUrl)
       .then(() => alert("Link copied to clipboard!"))
       .catch(() => alert("Failed to copy link"));
@@ -319,23 +304,12 @@ const handleShare = () => {
 
 
 
-
   if (loading || !roomData) return <SkeletonLoading />;
 
   if (error) return <div className="min-h-screen flex items-center justify-center text-red-500">Error loading room data</div>;
 
-
+  
   return (
-    <>
-        <Helmet>
-        <title>{roomData.title} | CampusHub</title>
-        <meta property="og:title" content={roomData.title} />
-        <meta property="og:description" content={roomData.description} />
-        <meta property="og:image" content={roomData.images[0]} />
-        <meta property="og:url" content={window.location.href} />
-        <meta property="og:type" content="website" />
-      </Helmet>
-
     <div className="min-h-screen bg-background">
       <Navbar />
 
@@ -713,7 +687,6 @@ const handleShare = () => {
 
       <Footer />
     </div>
-        </>
   );
 }
 
