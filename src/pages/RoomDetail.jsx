@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import SkeletonLoading from "@/components/SkeletonLoading";
+import { Helmet } from "react-helmet";
 import {
   MapPin, Shield, Star, Heart, Share2, Wifi, Droplets, Zap, Car, Users,
   Ruler, Calendar, MessageCircle, Phone, ChevronLeft, ChevronRight,
@@ -279,18 +280,33 @@ const formatKenyanPhoneForWhatsApp = (phone) => {
   return cleaned;
 };
 
+// const handleShare = () => {
+//   const roomUrl = window.location.href; // Current page URL
+
+//   if (navigator.share) {
+//     // Native Web Share API (mobile-friendly)
+//     navigator.share({
+//       title: roomData.title,
+//       text: `Check out this listing on CampusHub: ${roomData.title}`,
+//       url: roomUrl,
+//     }).catch(console.error);
+//   } else {
+//     // Fallback: copy URL to clipboard
+//     navigator.clipboard.writeText(roomUrl)
+//       .then(() => alert("Link copied to clipboard!"))
+//       .catch(() => alert("Failed to copy link"));
+//   }
+// };
 const handleShare = () => {
-  const roomUrl = window.location.href; // Current page URL
+  const roomUrl = window.location.href;
 
   if (navigator.share) {
-    // Native Web Share API (mobile-friendly)
     navigator.share({
       title: roomData.title,
-      text: `Check out this listing on CampusHub: ${roomData.title}`,
+      text: roomData.description,
       url: roomUrl,
     }).catch(console.error);
   } else {
-    // Fallback: copy URL to clipboard
     navigator.clipboard.writeText(roomUrl)
       .then(() => alert("Link copied to clipboard!"))
       .catch(() => alert("Failed to copy link"));
@@ -303,11 +319,23 @@ const handleShare = () => {
 
 
 
+
   if (loading || !roomData) return <SkeletonLoading />;
 
   if (error) return <div className="min-h-screen flex items-center justify-center text-red-500">Error loading room data</div>;
 
+
   return (
+    <>
+        <Helmet>
+        <title>{roomData.title} | CampusHub</title>
+        <meta property="og:title" content={roomData.title} />
+        <meta property="og:description" content={roomData.description} />
+        <meta property="og:image" content={roomData.images[0]} />
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:type" content="website" />
+      </Helmet>
+
     <div className="min-h-screen bg-background">
       <Navbar />
 
@@ -685,6 +713,7 @@ const handleShare = () => {
 
       <Footer />
     </div>
+        </>
   );
 }
 
