@@ -14,6 +14,11 @@ export default function Account() {
   const plan = profile?.plan || "free";
   const isFreePlan = plan === "free";
 
+    const handleUpgrade = () => {
+    setLocation(`/plans?plan=upgrade`);
+  };
+
+
   return (
     <Card>
       <CardContent className="pt-6 space-y-3">
@@ -73,7 +78,7 @@ export default function Account() {
             <Button
               size="sm"
               className="w-full gap-2"
-              onClick={() => setLocation("/plans")}
+              onClick={handleUpgrade}
             >
               <ArrowUpRight className="w-4 h-4" />
               Upgrade Plan

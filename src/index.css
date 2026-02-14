@@ -296,3 +296,9 @@
   animation: fadeIn 1s ease-in-out;
   margin-top: 20px;
 }
+
+.padd{
+  animation: fadeIn 1s ease-in-out;
+  padding-right: 20px;
+  margin-top: 20px;
+}

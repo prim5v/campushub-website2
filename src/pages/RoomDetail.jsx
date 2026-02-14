@@ -40,6 +40,8 @@ import {
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import ApiSocket from "@/utils/ApiSocket";
+import { useLocation } from "wouter";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function RoomDetail() {
   const [currentImage, setCurrentImage] = useState(0);
@@ -50,6 +52,10 @@ export default function RoomDetail() {
   const params = new URLSearchParams(window.location.search);
   const roomId = params.get("room");
   const [coordinates, setCoordinates] = useState({ latitude: 0, longitude: 0 });
+  const { authStatus } = useAuth();
+  const [showPhone, setShowPhone] = useState(false);
+  const [, setLocation] = useLocation();
+
 
   const FAVORITES_KEY = "campushub_favorites";
 
@@ -232,6 +238,70 @@ const iconMap = {
   }, [coordinates, roomId]);
 
 
+  // const handleShowPhone = () => {
+  //   if (authStatus !== "authenticated") {
+  //     alert("Please login to view phone number");
+  //     setLocation("/signin");
+  //     return;
+  //   }
+
+  //   setShowPhone(true);
+  // };
+
+  const handleShowPhone = () => {
+  if (authStatus !== "authenticated") {
+    alert("Please login to view phone number");
+    setLocation("/signin");
+    return;
+  }
+
+  const phone = roomData?.landlord?.phoneNumber || "0113899517";
+
+  if (!showPhone) {
+    setShowPhone(true);
+  } else {
+    // OPEN WHATSAPP
+    window.open(`https://wa.me/${phone.replace(/^0/, "254")}`, "_blank");
+
+    // OR OPEN CALL DIALER (choose one)
+    window.location.href = `tel:${phone}`;
+  }
+};
+
+const formatKenyanPhoneForWhatsApp = (phone) => {
+  if (!phone) return "";
+
+  let cleaned = phone.replace(/\s+/g, "");
+
+  if (cleaned.startsWith("+")) cleaned = cleaned.substring(1);
+  if (cleaned.startsWith("0")) cleaned = "254" + cleaned.substring(1);
+
+  return cleaned;
+};
+
+const handleShare = () => {
+  const roomUrl = window.location.href; // Current page URL
+
+  if (navigator.share) {
+    // Native Web Share API (mobile-friendly)
+    navigator.share({
+      title: roomData.title,
+      text: `Check out this listing on CampusHub: ${roomData.title}`,
+      url: roomUrl,
+    }).catch(console.error);
+  } else {
+    // Fallback: copy URL to clipboard
+    navigator.clipboard.writeText(roomUrl)
+      .then(() => alert("Link copied to clipboard!"))
+      .catch(() => alert("Failed to copy link"));
+  }
+};
+
+
+
+
+
+
 
   if (loading || !roomData) return <SkeletonLoading />;
 
@@ -284,9 +354,18 @@ const iconMap = {
                   >
                     <Heart className={`w-5 h-5 ${isFavorited ? "fill-current" : ""}`} />
                   </button>
-                  <button className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+
+                  {/* <button className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
                     <Share2 className="w-5 h-5" />
-                  </button>
+                  </button> */}
+                  <button
+  className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+  onClick={handleShare}
+>
+  <Share2 className="w-5 h-5" />
+</button>
+
+
                 </div>
                 {/* Image Navigation */}
                 <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
@@ -521,11 +600,66 @@ const iconMap = {
                         <span className="font-medium">{roomData.landlord.memberSince}</span>
                       </div>
                     </div>
-
+{/* 
                     <Button variant="ghost" className="w-full mt-4 gap-2">
                       <Phone className="w-4 h-4" />
                       Show Phone Number
-                    </Button>
+                    </Button> */}
+
+          {!showPhone ? (
+            <Button
+              variant="ghost"
+              className="w-full mt-4 gap-2"
+              onClick={handleShowPhone}
+            >
+              <Phone className="w-4 h-4" />
+              Show Phone Number
+            </Button>
+          ) : (
+            <div className="space-y-2 mt-4">
+
+                <div className="flex items-center gap-2 p-3 bg-muted/20 rounded-lg border border-border/50 w-fit hover:bg-muted/40 transition-colors cursor-pointer" id="padd">
+      <Phone className="w-5 h-5 text-primary" />
+      <a
+        href={`tel:${roomData.landlord.phoneNumber || "0113899517"}`}
+        className="text-sm font-medium text-foreground hover:text-primary"
+      >
+        {roomData.landlord.phoneNumber || "0113899517"}
+      </a>
+    </div>
+
+
+              {/* <Button
+                variant="ghost"
+                className="w-full gap-2"
+                onClick={() =>
+                  window.location.href = `tel:${roomData.landlord.phoneNumber}`
+                }
+              >
+                <Phone className="w-4 h-4" />
+                Call {roomData.landlord.phoneNumber}
+              </Button> */}
+
+<Button
+  variant="outline"
+  className="w-full gap-2"
+  onClick={() => {
+    const phone = formatKenyanPhoneForWhatsApp(roomData.landlord.phoneNumber);
+
+    const message = encodeURIComponent(
+      `Hi ${roomData.landlord.name}, I'm interested in your room "${roomData.title}" on CampusHub. Is it still available?`
+    );
+
+    window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+  }}
+>
+  WhatsApp Landlord
+</Button>
+
+            </div>
+          )}
+
+
                   </div>
 
                   <div className="bg-muted/50 rounded-xl p-4">
@@ -553,3 +687,4 @@ const iconMap = {
     </div>
   );
 }
+

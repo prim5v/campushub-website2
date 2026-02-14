@@ -25,6 +25,12 @@ import FullProfile from "./components/landlord/FullProfile";
 import Plans from "./components/landlord/Plans";
 import Verification from "./components/landlord/Verification";
 import MarketPlaceLoad from "./pages/comrade/MarketPlaceLoad";
+import Unauthorized from "./pages/unauthorized";
+import ProtectedRoute from "./ProtectedRoute";
+import SafetyTips from "./pages/comrade/SafetyTips";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import AppRedirector from "./AppRedirector";
 
 
 
@@ -42,8 +48,19 @@ if (authStatus === "unauthenticated") {
       <Route path="/room" component={RoomDetail} />
       <Route path="/landlord" component={Landlord} />
       <Route path="/profile" component={Profile} />
-      <Route path="/landlord-dashboard" component={LandlordDashboard} />
+      {/* <Route path="/landlord-dashboard" component={LandlordDashboard} /> */}
+      <Route path="/landlord-dashboard">
+        <ProtectedRoute allowedRoles={["landlord"]}>
+          <LandlordDashboard />
+        </ProtectedRoute>
+      </Route>
       <Route path="/marketplace" component={MarketPlaceLoad} />
+      <Route path="/plans" component={Plans} />
+      <Route path="/safety-tips" component={SafetyTips} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/terms-of-service" component={TermsOfService} />
+
+      {/* <Route component={Unauthorized}/> */}
 
       <Route path="/landlord-signup">
         <LandlordSignUp />
@@ -81,11 +98,28 @@ if (authStatus === "authenticated") {
       <Route path="/listings" component={Listings} />
       <Route path="/room" component={RoomDetail} />
       <Route path="/profile" component={Profile} />
-      <Route path="/landlord" component={LandlordDashboard} />
-      <Route path="/landlord-dashboard" component={LandlordDashboard} />
+      <Route path="/landlord">
+        <ProtectedRoute allowedRoles={["landlord"]}>
+          <LandlordDashboard />
+        </ProtectedRoute>
+      </Route>
+      {/* <Route path="/landlord" component={LandlordDashboard} /> */}
+
+      {/* <Route path="/landlord-dashboard" component={LandlordDashboard} /> */}
+
+      <Route path="/landlord-dashboard">
+        <ProtectedRoute allowedRoles={["landlord"]}>
+          <LandlordDashboard />
+        </ProtectedRoute>
+      </Route>
+
       <Route path="/full-profile" component={FullProfile} />
       <Route path="/plans" component={Plans} />
       <Route path="/verify-account" component={Verification} />
+      <Route path="/marketplace" component={MarketPlaceLoad} />
+      <Route path="/safety-tips" component={SafetyTips} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/terms-of-service" component={TermsOfService} />
       <Route path="/landlord-signup">
         <LandlordSignUp />
       </Route>
@@ -93,8 +127,9 @@ if (authStatus === "authenticated") {
        {/* AUTH */}
       <Route path="/signin" component={SignIn} />
       <Route path="/signup" component={SignUp} />
+      <Route component={Unauthorized}/>
 
-
+      {/* 404 fallback */}
 
 
       <Route component={NotFound} />
@@ -150,7 +185,7 @@ if (authStatus === "authenticated") {
     )
   }
 
-
+  // routes for authStatus idle
   return (
     <Switch>
       <Route path="/" component={Home} />
@@ -159,7 +194,11 @@ if (authStatus === "authenticated") {
       <Route path="/landlord" component={Landlord} />
       <Route path="/profile" component={Profile} />
       <Route path="/landlord-dashboard" component={LandlordDashboard} />
-
+      <Route path="/marketplace" component={MarketPlaceLoad} />
+      <Route path="/plans" component={Plans} />
+      <Route path="/safety-tips" component={SafetyTips} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/terms-of-service" component={TermsOfService} />
       <Route path="/landlord-signup">
         <LandlordSignUp />
       </Route>
@@ -168,6 +207,7 @@ if (authStatus === "authenticated") {
       {/* AUTH */}
       <Route path="/signin" component={SignIn} />
       <Route path="/signup" component={SignUp} />
+      <Route component={Unauthorized}/>
 
       {/* 404 fallback */}
       <Route component={NotFound} />
@@ -180,6 +220,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
+        <AppRedirector/>
         <Router />
       </TooltipProvider>
     </QueryClientProvider>

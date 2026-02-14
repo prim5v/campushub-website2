@@ -9,17 +9,22 @@ import { Footer } from "@/components/Footer";
 import { Users, Building2, Briefcase, ShieldCheck } from "lucide-react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
+import { Link } from "wouter"
+import { X } from "lucide-react";
+
 
 const roles = [
-  { key: "comrade", label: "Comrade", icon: Users },
-  { key: "landlord", label: "Landlord", icon: Building2 },
-  { key: "eservice", label: "E-Service", icon: Briefcase },
+  { key: "comrade", label: "Comrade account", icon: Users },
+  { key: "landlord", label: "Landlord account", icon: Building2 },
+  // { key: "eservice", label: "E-Service account", icon: Briefcase },
 ];
 
 export default function SignUp() {
   const [, setLocation] = useLocation();
 
   const [role, setRole] = useState("comrade");
+  const [showLandlordPopup, setShowLandlordPopup] = useState(false);
+
   const [step, setStep] = useState("form"); // form | otp
   const [form, setForm] = useState({
     role: "comrade",
@@ -30,13 +35,23 @@ export default function SignUp() {
   const [otp, setOtp] = useState("");
   const { signup, error } = useAuth();
 
+  // function handleRoleSelect(r) {
+  //   if (r !== "comrade") {
+  //     setLocation(`/${r}`); // redirect immediately
+  //     return;
+  //   }
+  //   setRole(r);
+  // }
+
   function handleRoleSelect(r) {
-    if (r !== "comrade") {
-      setLocation(`/${r}`); // redirect immediately
-      return;
-    }
-    setRole(r);
+  if (r === "landlord") {
+    setShowLandlordPopup(true);
+    return;
   }
+
+  setRole(r);
+}
+
 
  async function handleSubmit(e) {
     e.preventDefault();
@@ -63,13 +78,15 @@ export default function SignUp() {
       <div className="pt-32 pb-20 flex justify-center px-4">
         <Card className="w-full max-w-md border-border/50 shadow-lg">
           <CardHeader className="text-center space-y-4">
-            <Badge variant="secondary">
+            {/* <Badge variant="secondary">
               {step === "form" ? "Sign Up" : "Verify OTP"}
-            </Badge>
+            </Badge> */}
 
             <CardTitle className="text-2xl">
-              {step === "form" ? "Create Account" : "Verify Your Email"}
+              {step === "form" ? "Create CampusHub Account " : "Verify Your Email"}
             </CardTitle>
+
+            <h2 className="text-sm text-muted-foreground">select your account's purpose</h2>
 
             {/* ROLE SELECTOR */}
             <div className="flex gap-2 justify-center">
@@ -139,6 +156,12 @@ export default function SignUp() {
                 </div>
 
                 <Button className="w-full h-12">Create Account</Button>
+                <p className="text-sm text-muted-foreground">
+                  Already have an account?{" "}
+                  <Link href="/signin" className="text-primary hover:underline">
+                    Sign in
+                  </Link>
+                </p>
               </form>
             ) : (
               <form onSubmit={handleVerifyOtp} className="space-y-4 text-center">
@@ -169,6 +192,58 @@ export default function SignUp() {
       </div>
 
       <Footer />
+
+{showLandlordPopup && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <Card className="max-w-md w-full relative">
+      
+      {/* CLOSE BUTTON */}
+      <button
+        onClick={() => setShowLandlordPopup(false)}
+        className="absolute right-3 top-3 text-muted-foreground hover:text-foreground transition"
+      >
+        <X className="w-5 h-5" />
+      </button>
+
+      <CardHeader>
+        <CardTitle>Grow Faster With CampusHub Landlord Tools</CardTitle>
+      </CardHeader>
+
+      <CardContent className="space-y-4">
+        <p className="text-sm text-muted-foreground">
+          Before creating a landlord account, explore our listing plans,
+          tenant verification tools, and promotion features designed to
+          help you fill rooms faster and reach verified student tenants.
+        </p>
+
+        <div className="flex gap-2">
+          <Button
+            className="w-full"
+            onClick={() => {
+              setShowLandlordPopup(false);
+              setLocation("/plans");
+            }}
+          >
+            View Landlord Offers
+          </Button>
+
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => {
+              setShowLandlordPopup(false);
+              setLocation("/landlord-signup");
+            }}
+          >
+            Continue Signup
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+)}
+
+
     </div>
   );
 }

@@ -432,7 +432,7 @@ useEffect(() => {
                   </li>
                 ))}
               </ul>
-              <Link href="/landlord">
+              <Link href="/landlord-dashboard">
                 <Button 
                   size="lg" 
                   variant="secondary" 

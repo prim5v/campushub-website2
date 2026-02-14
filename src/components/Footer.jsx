@@ -26,17 +26,17 @@ export function Footer() {
               <li><Link href="/listings" className="hover:text-primary transition-colors">Browse Rooms</Link></li>
               <li><Link href="/listings" className="hover:text-primary transition-colors">Verified Listings</Link></li>
               <li><Link href="/" className="hover:text-primary transition-colors">How It Works</Link></li>
-              <li><Link href="/" className="hover:text-primary transition-colors">Safety Tips</Link></li>
+              <li><Link href="/safety-tips" className="hover:text-primary transition-colors">Safety Tips</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-semibold mb-4">For Landlords</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/landlord" className="hover:text-primary transition-colors">List Your Property</Link></li>
-              <li><Link href="/landlord" className="hover:text-primary transition-colors">Pricing Plans</Link></li>
-              <li><Link href="/landlord" className="hover:text-primary transition-colors">Get Verified</Link></li>
-              <li><Link href="/landlord" className="hover:text-primary transition-colors">Landlord FAQ</Link></li>
+              <li><Link href="/landlord-dashboard" className="hover:text-primary transition-colors">List Your Property</Link></li>
+              <li><Link href="/landlord-dashboard" className="hover:text-primary transition-colors">Pricing Plans</Link></li>
+              <li><Link href="/landlord-dashboard" className="hover:text-primary transition-colors">Get Verified</Link></li>
+              <li><Link href="/landlord-dashboard" className="hover:text-primary transition-colors">Landlord FAQ</Link></li>
             </ul>
           </div>
 
@@ -65,8 +65,8 @@ export function Footer() {
             © 2026 CampusHub. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm text-muted-foreground">
-            <Link href="/" className="hover:text-primary transition-colors">Privacy Policy</Link>
-            <Link href="/" className="hover:text-primary transition-colors">Terms of Service</Link>
+            <Link href="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+            <Link href="/terms-of-service" className="hover:text-primary transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>

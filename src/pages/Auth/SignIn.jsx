@@ -10,7 +10,7 @@ import { Users, Building2, Briefcase } from "lucide-react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
 import { ErrorSocket } from "@/utils/ErrorSocket";
-
+import { Link } from "wouter"
 const roles = [
   { key: "comrade", label: "Comrade", icon: Users },
   { key: "landlord", label: "Landlord", icon: Building2 },
@@ -75,7 +75,7 @@ export default function SignIn() {
       <div className="pt-32 pb-20 flex justify-center px-4">
         <Card className="w-full max-w-md border-border/50 shadow-lg">
           <CardHeader className="text-center space-y-4">
-            <Badge variant="secondary">Sign In</Badge>
+            {/* <Badge variant="secondary">Sign In</Badge> */}
             <CardTitle className="text-2xl">Welcome Back</CardTitle>
 
             {/* ROLE SELECTOR */}
@@ -142,6 +142,13 @@ export default function SignIn() {
               </div>
 
               <Button className="w-full h-12">Sign In</Button>
+
+              <p className="text-center text-sm text-muted-foreground">
+                Don't have an account?{" "}
+                <Link href="/signup" className="text-primary hover:underline">
+                  Sign up
+                </Link>
+              </p>
             </form>
           </CardContent>
         </Card>

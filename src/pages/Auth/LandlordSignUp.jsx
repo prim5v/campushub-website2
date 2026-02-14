@@ -57,6 +57,17 @@ export default function LandlordSignUp() {
   }, []);
 
 
+useEffect(() => {
+  if (planerror === "Plan not found") {
+    alert(
+      "You haven’t selected a landlord plan yet. Please choose a plan to continue."
+    );
+    setLocation("/plans");
+  }
+}, [planerror]);
+
+
+
 
 
 
@@ -152,7 +163,10 @@ export default function LandlordSignUp() {
   /* ================= RENDER SCREENS ================= */
   if (loading) return <LoadingScreen/>;
   // if (error) return <p className="text-red-600">{error}</p>;
-  if (planerror) return <p className="text-red-600">{planerror}</p>
+if (planerror && planerror !== "Plan not found") {
+  return <p className="text-red-600">{planerror}</p>;
+}
+
 
 
 
