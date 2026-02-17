@@ -31,6 +31,7 @@ import SafetyTips from "./pages/comrade/SafetyTips";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import AppRedirector from "./AppRedirector";
+import AuthNudgeController from "./components/AuthNudgeController";
 
 
 
@@ -221,6 +222,7 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <AppRedirector/>
+        <AuthNudgeController />
         <Router />
       </TooltipProvider>
     </QueryClientProvider>
