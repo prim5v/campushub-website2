@@ -32,6 +32,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import AppRedirector from "./AppRedirector";
 import AuthNudgeController from "./components/AuthNudgeController";
+import CookieConsentModal from "./components/CookieConsentModal";
+import MarketplaceNudgeController from "./components/MarketplaceNudgeController";
 
 
 
@@ -223,6 +225,8 @@ function App() {
         <Toaster />
         <AppRedirector/>
         <AuthNudgeController />
+        <MarketplaceNudgeController />
+        <CookieConsentModal />
         <Router />
       </TooltipProvider>
     </QueryClientProvider>
