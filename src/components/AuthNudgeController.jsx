@@ -10,7 +10,7 @@ export default function AuthNudgeController() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (authStatus !== "unauthenticated") return;
+    if (authStatus !== "idle") return;
 
     let mountTimer;
     let intervalTimer;
