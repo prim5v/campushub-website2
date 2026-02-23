@@ -245,7 +245,7 @@ useEffect(() => {
 
   fetchMaintenance(); // initial fetch
 
-  const interval = setInterval(fetchMaintenance, 60000); // refresh every 60s
+  const interval = setInterval(fetchMaintenance, 5000); // refresh every 60s
 
   return () => {
     isMounted = false;
