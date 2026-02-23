@@ -34,6 +34,9 @@ import AppRedirector from "./AppRedirector";
 import AuthNudgeController from "./components/AuthNudgeController";
 import CookieConsentModal from "./components/CookieConsentModal";
 import MarketplaceNudgeController from "./components/MarketplaceNudgeController";
+import MaintenanceScreen from "./components/MaintenanceScreen";
+import { useState, useEffect } from "react";
+import ApiSocket from "@/utils/ApiSocket";
 
 
 
@@ -219,6 +222,40 @@ if (authStatus === "authenticated") {
 }
 
 function App() {
+  const [maintenance, setMaintenance] = useState({ loading: true, active: false, message: "" });
+
+useEffect(() => {
+  let isMounted = true;
+
+  const fetchMaintenance = async () => {
+    try {
+      const res = await ApiSocket.get("/comrade/system_maintenance");
+      if (!isMounted) return;
+      setMaintenance({
+        loading: false,
+        active: res.is_active,
+        message: res.message,
+      });
+    } catch (err) {
+      console.error("Failed to fetch maintenance status:", err);
+      if (!isMounted) return;
+      setMaintenance({ loading: false, active: false, message: "" });
+    }
+  };
+
+  fetchMaintenance(); // initial fetch
+
+  const interval = setInterval(fetchMaintenance, 60000); // refresh every 60s
+
+  return () => {
+    isMounted = false;
+    clearInterval(interval);
+  };
+}, []);
+
+if (maintenance.loading) return <LoadingScreen />;
+if (maintenance.active) return <MaintenanceScreen message={maintenance.message} />;
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
