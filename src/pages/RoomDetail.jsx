@@ -57,6 +57,10 @@ export default function RoomDetail() {
   const [showPhone, setShowPhone] = useState(false);
   const [, setLocation] = useLocation();
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+
 
   const FAVORITES_KEY = "campushub_favorites";
 
@@ -268,6 +272,40 @@ const iconMap = {
     window.location.href = `tel:${phone}`;
   }
 };
+  
+const handleContactRequest = () => {
+  if (authStatus !== "authenticated") {
+    alert("Please login to make contact request");
+    setLocation("/signin");
+    return;
+  }
+  setIsModalOpen(true);
+};
+
+const submitContactRequest = async () => {
+  if (!fullName || !phoneNumber) {
+    alert("Please fill in all fields");
+    return;
+  }
+
+  try {
+    await ApiSocket.post("/comrade/request_listing", {
+      listing_id: roomId,
+      full_name: fullName,
+      phone_number: phoneNumber,
+    });
+
+    alert("Request submitted successfully!");
+    setIsModalOpen(false);
+    setFullName("");
+    setPhoneNumber("");
+  } catch (err) {
+    console.error(err);
+    alert("Failed to submit request");
+  }
+};
+
+
 
 const formatKenyanPhoneForWhatsApp = (phone) => {
   if (!phone) return "";
@@ -564,14 +602,14 @@ const handleShare = () => {
                   </div>
 
                   <div className="space-y-3">
-                    <Button className="w-full h-12 gap-2" size="lg">
-                      <Calendar className="w-5 h-5" />
-                      Book Viewing
-                    </Button>
-                    <Button variant="outline" className="w-full h-12 gap-2" size="lg">
+                <Button className="w-full h-12 gap-2" size="lg" onClick={handleContactRequest}>
+                  <Calendar className="w-5 h-5" />
+                  Contact Request
+                </Button>
+                    {/* <Button variant="outline" className="w-full h-12 gap-2" size="lg">
                       <MessageCircle className="w-5 h-5" />
                       Message Landlord
-                    </Button>
+                    </Button> */}
                   </div>
 
                   <div className="border-t border-border pt-6">
@@ -664,7 +702,7 @@ const handleShare = () => {
 
                   </div>
 
-                  <div className="bg-muted/50 rounded-xl p-4">
+                  {/* <div className="bg-muted/50 rounded-xl p-4">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
                       <Clock className="w-4 h-4" />
                       Quick Inquiry
@@ -677,13 +715,51 @@ const handleShare = () => {
                     <Button className="w-full">
                       Send Inquiry
                     </Button>
-                  </div>
+                  </div> */}
                 </CardContent>
               </Card>
             </div>
           </div>
         </div>
       </main>
+      {isModalOpen && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div className="bg-white p-6 rounded-lg w-full max-w-md">
+      <h2 className="text-xl font-semibold mb-4">Contact Request</h2>
+
+      <input
+        type="text"
+        placeholder="Full Name"
+        value={fullName}
+        onChange={(e) => setFullName(e.target.value)}
+        className="w-full mb-3 p-2 border rounded"
+      />
+
+      <input
+        type="tel"
+        placeholder="Phone Number"
+        value={phoneNumber}
+        onChange={(e) => setPhoneNumber(e.target.value)}
+        className="w-full mb-3 p-2 border rounded"
+      />
+
+      <div className="flex justify-end gap-2 mt-4">
+        <button
+          className="px-4 py-2 rounded bg-gray-300"
+          onClick={() => setIsModalOpen(false)}
+        >
+          Cancel
+        </button>
+        <button
+          className="px-4 py-2 rounded bg-primary text-white"
+          onClick={submitContactRequest}
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       <Footer />
     </div>
