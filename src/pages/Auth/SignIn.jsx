@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { Users, Building2, Briefcase } from "lucide-react";
+import { Users, Building2, Briefcase, Eye, EyeOff } from "lucide-react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
 import { ErrorSocket } from "@/utils/ErrorSocket";
@@ -23,6 +23,7 @@ export default function SignIn() {
   const [role, setRole] = useState("comrade");
   const [form, setForm] = useState({ email: "", password: "" });
   const [errorSocket, setErrorSocket] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
     // const unsubscribe = ErrorSocket.on((err) => {
@@ -132,13 +133,29 @@ export default function SignIn() {
 
               <div>
                 <Label>Password</Label>
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  required
-                />
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    value={form.password}
+                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    required
+                    className="pr-10"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    aria-label="Toggle password visibility"
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
               </div>
 
               <Button className="w-full h-12">Sign In</Button>

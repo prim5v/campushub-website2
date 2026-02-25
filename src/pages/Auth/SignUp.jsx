@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
-import { Users, Building2, Briefcase, ShieldCheck } from "lucide-react";
+import { Users, Building2, Briefcase, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "wouter"
@@ -24,6 +24,7 @@ export default function SignUp() {
 
   const [role, setRole] = useState("comrade");
   const [showLandlordPopup, setShowLandlordPopup] = useState(false);
+  const [showPassword, setShowPassword] = useState(false)
 
   const [step, setStep] = useState("form"); // form | otp
   const [form, setForm] = useState({
@@ -143,9 +144,11 @@ export default function SignUp() {
                 </div>
 
                 <div>
+                  
                   <Label>Password</Label>
+                  <div className="relative">
                   <Input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
                     value={form.password}
                     onChange={(e) =>
@@ -153,6 +156,21 @@ export default function SignUp() {
                     }
                     required
                   />
+                  <button
+                  type="button"
+                  onClick={()=> setShowPassword((prev) => !prev)}
+                  aria-label="Toggle password visibility"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4"/>
+
+                    ) : (
+                      <Eye className="h-4 w-4"/>
+                    )
+                  }
+                  </button>
+                  </div>
                 </div>
 
                 <Button className="w-full h-12">Create Account</Button>

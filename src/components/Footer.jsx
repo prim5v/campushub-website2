@@ -67,6 +67,14 @@ export function Footer() {
           <div className="flex gap-6 text-sm text-muted-foreground">
             <Link href="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
             <Link href="/terms-of-service" className="hover:text-primary transition-colors">Terms of Service</Link>
+            <a
+    href="https://campushubadmin.vercel.app/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="hover:text-primary transition-colors"
+  >
+    manage
+  </a>
           </div>
         </div>
       </div>
