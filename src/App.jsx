@@ -7,6 +7,7 @@ import { Toaster } from "./components/ui/toaster";
 import { TooltipProvider } from "./components/ui/tooltip";
 import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
+import * as Sentry from "@sentry/react";
 
 import NotFound from "./pages/not-found";
 import Home from "./pages/Home";
@@ -43,6 +44,7 @@ import ApiSocket from "@/utils/ApiSocket";
 
 function Router() {
   const { authStatus } = useAuth()
+
 
 
 // if unauthenticated
@@ -109,9 +111,6 @@ if (authStatus === "authenticated") {
           <LandlordDashboard />
         </ProtectedRoute>
       </Route>
-      {/* <Route path="/landlord" component={LandlordDashboard} /> */}
-
-      {/* <Route path="/landlord-dashboard" component={LandlordDashboard} /> */}
 
       <Route path="/landlord-dashboard">
         <ProtectedRoute allowedRoles={["landlord"]}>
@@ -142,18 +141,6 @@ if (authStatus === "authenticated") {
     </Switch>
   );
 }
-
-  // if (authStatus === "authenticated") {
-  //   return (
-  //     <Switch>
-  //       <Route>
-  //         <RoleRouter />
-  //       </Route>
-  //     </Switch>
-  //   );
-  // }
-
-
 
 
   // screen flow 
@@ -222,7 +209,18 @@ if (authStatus === "authenticated") {
 }
 
 function App() {
-  const [maintenance, setMaintenance] = useState({ loading: true, active: false, message: "" });
+
+    const [maintenance, setMaintenance] = useState(() => {
+    const stored = localStorage.getItem("maintenance");
+    if (stored) return JSON.parse(stored);
+
+    return {
+      loading: true,
+      active: false,
+      message: ""
+    };
+    });
+
 
 useEffect(() => {
   let isMounted = true;
@@ -231,21 +229,31 @@ useEffect(() => {
     try {
       const res = await ApiSocket.get("/comrade/system_maintenance");
       if (!isMounted) return;
-      setMaintenance({
+      const newState = {
         loading: false,
         active: res.is_active,
-        message: res.message,
-      });
+        message: res.message
+      };
+
+      setMaintenance(newState);
+      localStorage.setItem("maintenance", JSON.stringify(newState));
     } catch (err) {
-      console.error("Failed to fetch maintenance status:", err);
-      if (!isMounted) return;
-      setMaintenance({ loading: false, active: false, message: "" });
-    }
+  // console.error("Failed to fetch maintenance status:", err);
+  Sentry.captureException(err); // replaces console.error
+  if (!isMounted) return;
+
+  const stored = localStorage.getItem("maintenance");
+  if (stored) {
+    setMaintenance(JSON.parse(stored));
+  } else {
+    setMaintenance({ loading: false, active: false, message: "" });
+  }
+}
   };
 
   fetchMaintenance(); // initial fetch
 
-  const interval = setInterval(fetchMaintenance, 5000); // refresh every 60s
+  const interval = setInterval(fetchMaintenance, 5000); // refresh every 5s
 
   return () => {
     isMounted = false;
@@ -254,7 +262,7 @@ useEffect(() => {
 }, []);
 
 if (maintenance.loading) return <LoadingScreen />;
-if (maintenance.active) return <MaintenanceScreen message={maintenance.message} />;
+if (maintenance.active ) return <MaintenanceScreen message={maintenance.message} />;
 
   return (
     <QueryClientProvider client={queryClient}>

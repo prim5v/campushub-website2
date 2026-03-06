@@ -1,5 +1,6 @@
 // src/utils/ApiSocket.js
 import { ErrorSocket } from "./ErrorSocket";
+import * as Sentry from "@sentry/react";
 
 
 const API_BASE_URL =
@@ -19,7 +20,8 @@ function getCsrfToken() {
       }
     }
   } catch (err) {
-    console.warn("[API DEBUG] Failed to parse auth_user from localStorage", err);
+    // console.warn("[API DEBUG] Failed to parse auth_user from localStorage", err);
+    Sentry.captureException(err);
   }
 
   // 2️⃣ Fallback to cookie
@@ -30,30 +32,31 @@ function getCsrfToken() {
   return null;
 }
 
+
 // ================================
 // Unified response handler
 // ================================
 const handleResponse = async (res) => {
-  console.log("[API DEBUG] Response Status:", res.status);
-
   const data = await res.json().catch(() => ({}));
-  console.log("[API DEBUG] Response Data:", data);
 
   if (res.status === 401) {
-    console.warn("[API DEBUG] Session expired");
     window.dispatchEvent(new Event("auth:logout"));
-    throw new Error("Session expired");
+    const err = new Error("Session expired");
+    Sentry.captureException(err);
+    throw err;
   }
 
   if (!res.ok) {
-    const error = data?.error || `HTTP ${res.status}`;
-    console.error("[API DEBUG] Error Response:", error);
-    const e = new Error(error);
-    e.status = res.status;
-    e.data = data;
+    const errorMessage = data?.error || `HTTP ${res.status}`;
+    const err = new Error(errorMessage);
+    err.status = res.status;
+    err.data = data;
 
-    ErrorSocket.emit(e); // 🔥 Emit global error event
-    throw e;
+    // Report to Sentry
+    Sentry.captureException(err);
+    ErrorSocket.emit(err);
+
+    throw err;
   }
 
   return data;
@@ -108,8 +111,7 @@ async function apiRequest(path, options = {}) {
     const res = await fetch(`${API_BASE_URL}${path}`, fetchOptions);
     return await handleResponse(res);
   } catch (err) {
-    console.error("[API ERROR]", err);  
-
+    Sentry.captureException(err);
     ErrorSocket.emit(err); // 🔥 Emit global error event
     throw err;
   }
@@ -138,131 +140,3 @@ export const ApiSocket = {
 export default ApiSocket;
 
 
-
-// // src/utils/ApiSocket.js
-
-// const API_BASE_URL = import.meta.env.VITE_API_URL || "https://campushub4293.pythonanywhere.com";
-
-// // ================================
-// // Device ID handling
-// // ================================
-// function getOrCreateDeviceId() {
-//   let deviceId = localStorage.getItem("device_id");
-
-//   if (!deviceId) {
-//     deviceId = crypto.randomUUID();
-//     localStorage.setItem("device_id", deviceId);
-//   }
-
-//   return deviceId;
-// }
-
-// // ================================
-// // CSRF token helper
-// // ================================
-// function getCookie(name) {
-//   const value = `; ${document.cookie}`;
-//   const parts = value.split(`; ${name}=`);
-//   if (parts.length === 2) return parts.pop().split(";").shift();
-//   return null;
-// }
-
-// // ================================
-// // Unified response handler
-// // ================================
-// const handleResponse = async (res) => {
-//   if (res.status === 401) {
-//     // session expired or invalid
-//     window.dispatchEvent(new Event("auth:logout"));
-//     throw new Error("Session expired");
-//   }
-
-//   const data = await res.json().catch(() => ({}));
-
-//   if (!res.ok) {
-//     const error = data?.error || `HTTP ${res.status}`;
-//     const e = new Error(error);
-//     e.status = res.status;
-//     e.data = data;
-//     throw e;
-//   }
-
-//   return data;
-// };
-
-// // ================================
-// // Core request wrapper (FETCH)
-// // ================================
-// async function apiRequest(path, options = {}) {
-//   const deviceId = getOrCreateDeviceId();
-//   const csrfToken = getCookie("csrf_token");
-
-//   const method = (options.method || "GET").toUpperCase();
-
-//   const headers = {
-//     "Content-Type": "application/json",
-//     // code 401 bug here below
-//     // "X-Device-ID": deviceId,
-//     ...(options.headers || {}),
-//   };
-
-//   if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
-//     if (csrfToken) {
-//       headers["X-CSRF-Token"] = csrfToken;
-//     }
-//   }
-
-//   const fetchOptions = {
-//     method,
-//     headers,
-//     credentials: "include", // 🔥 sends cookies (JWT, CSRF)
-//   };
-
-//   if (options.body) {
-//     fetchOptions.body = options.body;
-//   }
-
-//   try {
-//     const res = await fetch(`${API_BASE_URL}${path}`, fetchOptions);
-//     return await handleResponse(res);
-//   } catch (err) {
-//     // ================================
-//     // Global error logging
-//     // ================================
-//     console.error("[API ERROR]", err);
-//     throw err;
-//   }
-// }
-
-// // ================================
-// // Public API helpers
-// // ================================
-// export const ApiSocket = {
-//   get: (path) => apiRequest(path, { method: "GET" }),
-
-//   post: (path, body) =>
-//     apiRequest(path, {
-//       method: "POST",
-//       body: JSON.stringify(body),
-//     }),
-
-//   put: (path, body) =>
-//     apiRequest(path, {
-//       method: "PUT",
-//       body: JSON.stringify(body),
-//     }),
-
-//   patch: (path, body) =>
-//     apiRequest(path, {
-//       method: "PATCH",
-//       body: JSON.stringify(body),
-//     }),
-
-//   delete: (path, body = null) =>
-//     apiRequest(path, {
-//       method: "DELETE",
-//       body: body ? JSON.stringify(body) : null,
-//     }),
-// };
-
-// export default ApiSocket;

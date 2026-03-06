@@ -1,3 +1,24 @@
+// // main.jsx
+// import React from "react";
+// import { createRoot } from "react-dom/client";
+// import App from "./App";
+// import "./index.css";
+// import { AuthProvider } from "@/contexts/AuthContext";
+// import { LandlordProvider } from "@/contexts/LandlordContext";
+// import { CookieConsentProvider } from "@/contexts/CookieConsentContext"; // ✅ import
+
+// createRoot(document.getElementById("root")).render(
+//   <React.StrictMode>
+//     <CookieConsentProvider> {/* ✅ wrap everything in CookieConsentProvider */}
+//       <AuthProvider>
+//         <LandlordProvider>
+//           <App />
+//         </LandlordProvider>
+//       </AuthProvider>
+//     </CookieConsentProvider>
+//   </React.StrictMode>
+// );
+
 // main.jsx
 import React from "react";
 import { createRoot } from "react-dom/client";
@@ -5,14 +26,29 @@ import App from "./App";
 import "./index.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LandlordProvider } from "@/contexts/LandlordContext";
-import { CookieConsentProvider } from "@/contexts/CookieConsentContext"; // ✅ import
+import { CookieConsentProvider } from "@/contexts/CookieConsentContext";
+import * as Sentry from "@sentry/react";
 
-createRoot(document.getElementById("root")).render(
+// Initialize Sentry (error reporting only, no tracing for now)
+Sentry.init({
+  dsn: "https://df6883549ffcef996a3efa124d556367@o4510996521418752.ingest.us.sentry.io/4510996523450368",
+  tracesSampleRate: 0, // Set to 0 since we are skipping performance tracing
+  environment: process.env.NODE_ENV,
+  sendDefaultPii: true, // optional, captures PII like IP
+});
+
+// Create root
+const container = document.getElementById("root");
+const root = createRoot(container);
+
+root.render(
   <React.StrictMode>
-    <CookieConsentProvider> {/* ✅ wrap everything in CookieConsentProvider */}
+    <CookieConsentProvider>
       <AuthProvider>
         <LandlordProvider>
-          <App />
+          <Sentry.ErrorBoundary fallback={<div>Something went wrong. Please try again later.</div>}>
+            <App />
+          </Sentry.ErrorBoundary>
         </LandlordProvider>
       </AuthProvider>
     </CookieConsentProvider>
