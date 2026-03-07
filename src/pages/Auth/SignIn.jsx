@@ -158,6 +158,16 @@ export default function SignIn() {
                 </div>
               </div>
 
+              {/* After the password input div */}
+<div className="flex justify-end mb-4">
+  <Link
+    href="/forgot-password"
+    className="text-sm text-primary hover:underline"
+  >
+    Forgot Password?
+  </Link>
+</div>
+
               <Button className="w-full h-12">Sign In</Button>
 
               <p className="text-center text-sm text-muted-foreground">

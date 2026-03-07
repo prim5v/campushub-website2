@@ -38,6 +38,8 @@ import MarketplaceNudgeController from "./components/MarketplaceNudgeController"
 import MaintenanceScreen from "./components/MaintenanceScreen";
 import { useState, useEffect } from "react";
 import ApiSocket from "@/utils/ApiSocket";
+import ForgotPassword from "./pages/comrade/ForgotPassword";
+import ResetPassword from "./pages/comrade/ResetPassword";
 
 
 
@@ -67,6 +69,8 @@ if (authStatus === "unauthenticated") {
       <Route path="/safety-tips" component={SafetyTips} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms-of-service" component={TermsOfService} />
+      <Route path="/forgot-password" component={ForgotPassword} />
+      <Route path="/reset-pasword" component={ResetPassword} />
 
       {/* <Route component={Unauthorized}/> */}
 
@@ -192,6 +196,8 @@ if (authStatus === "authenticated") {
       <Route path="/safety-tips" component={SafetyTips} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms-of-service" component={TermsOfService} />
+      <Route path="/forgot-password" component={ForgotPassword} />
+      <Route path="/reset-pasword" component={ResetPassword} />
       <Route path="/landlord-signup">
         <LandlordSignUp />
       </Route>
