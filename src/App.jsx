@@ -70,7 +70,7 @@ if (authStatus === "unauthenticated") {
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms-of-service" component={TermsOfService} />
       <Route path="/forgot-password" component={ForgotPassword} />
-      <Route path="/reset-pasword" component={ResetPassword} />
+      <Route path="/reset-password" component={ResetPassword} />
 
       {/* <Route component={Unauthorized}/> */}
 
@@ -197,7 +197,7 @@ if (authStatus === "authenticated") {
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms-of-service" component={TermsOfService} />
       <Route path="/forgot-password" component={ForgotPassword} />
-      <Route path="/reset-pasword" component={ResetPassword} />
+      <Route path="/reset-password" component={ResetPassword} />
       <Route path="/landlord-signup">
         <LandlordSignUp />
       </Route>
