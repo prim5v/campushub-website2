@@ -77,9 +77,9 @@ export default function ResetPassword() {
 
   // Render loading / invalid token states
   if (status.loading && !tokenValid) return <div className="pt-32 text-center">Checking token...</div>;
- if (!token || !tokenValid) {
+if (!token || !tokenValid) {
   return (
-    <div className="pt-16 text-center flex flex-col items-center justify-center min-h-screen">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-start pt-24">
       <Player
         autoplay
         loop
@@ -87,7 +87,10 @@ export default function ResetPassword() {
         style={{ height: 300, width: 300 }}
       />
       <h2 className="text-xl font-semibold mt-4">{status.message}</h2>
-      <Link href="/forgot-password" className="text-primary hover:underline mt-4 inline-block">
+      <Link
+        href="/forgot-password"
+        className="text-primary hover:underline mt-4 inline-block"
+      >
         Request a new reset link
       </Link>
     </div>
