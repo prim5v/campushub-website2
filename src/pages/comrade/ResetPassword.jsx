@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams, useLocation, Link } from "wouter";
+import { useRoute, useLocation, Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,10 +12,12 @@ import { Eye, EyeOff } from "lucide-react";
 import * as Sentry from "@sentry/react";
 
 export default function ResetPassword() {
-  const [searchParams] = useSearchParams();
+  // Capture token from path parameter
+  const [match] = useRoute("/reset-password/:token");
+  const token = match?.token;
+
   const [, setLocation] = useLocation();
 
-  const token = searchParams.get("token");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -73,7 +75,7 @@ export default function ResetPassword() {
     }
   };
 
-  // Render loading / invalid token states
+  // Loading / invalid token states
   if (status.loading && !tokenValid) return <div className="pt-32 text-center">Checking token...</div>;
   if (!token || !tokenValid) {
     return (
