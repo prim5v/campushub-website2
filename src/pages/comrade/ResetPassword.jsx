@@ -10,6 +10,8 @@ import { ApiSocket } from "@/utils/ApiSocket";
 import { Toaster } from "@/components/ui/toaster";
 import { Eye, EyeOff } from "lucide-react";
 import * as Sentry from "@sentry/react";
+import { Player } from "@lottiefiles/react-lottie-player";
+import NotFoundAnimation from "@/assets/lottie/404.json";
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
@@ -75,16 +77,22 @@ export default function ResetPassword() {
 
   // Render loading / invalid token states
   if (status.loading && !tokenValid) return <div className="pt-32 text-center">Checking token...</div>;
-  if (!token || !tokenValid) {
-    return (
-      <div className="pt-32 text-center">
-        <h2 className="text-xl font-semibold">{status.message}</h2>
-        <Link href="/forgot-password" className="text-primary hover:underline mt-4 inline-block">
-          Request a new reset link
-        </Link>
-      </div>
-    );
-  }
+ if (!token || !tokenValid) {
+  return (
+    <div className="pt-16 text-center flex flex-col items-center justify-center min-h-screen">
+      <Player
+        autoplay
+        loop
+        src={NotFoundAnimation}
+        style={{ height: 300, width: 300 }}
+      />
+      <h2 className="text-xl font-semibold mt-4">{status.message}</h2>
+      <Link href="/forgot-password" className="text-primary hover:underline mt-4 inline-block">
+        Request a new reset link
+      </Link>
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen bg-background">
