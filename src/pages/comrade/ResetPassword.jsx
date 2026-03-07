@@ -11,7 +11,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Eye, EyeOff } from "lucide-react";
 import * as Sentry from "@sentry/react";
 import { Player } from "@lottiefiles/react-lottie-player";
-import NotFoundAnimation from "@/assets/lottie/404.json";
+import NotFoundAnimation from "../../../assets/lottie/404.json";
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
