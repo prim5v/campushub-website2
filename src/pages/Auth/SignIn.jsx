@@ -24,6 +24,7 @@ export default function SignIn() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [errorSocket, setErrorSocket] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false)
 
     useEffect(() => {
     // const unsubscribe = ErrorSocket.on((err) => {
@@ -53,6 +54,7 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorSocket(null);
+    setLoading(true)
     const ok = await login(form);
     if (ok) {
       setLocation("/auth-redirect");
@@ -61,11 +63,12 @@ export default function SignIn() {
     
 
     // MOCK LOGIN
-    console.log("LOGIN DATA:", { role, ...form });
+    // console.log("LOGIN DATA:", { role, ...form });
     
 
     // alert("login successful!");
     // setLocation("/dashboard");
+    setLoading(false)
   }
   
 
@@ -168,8 +171,9 @@ export default function SignIn() {
   </Link>
 </div>
 
-              <Button className="w-full h-12">Sign In</Button>
-
+              <Button className="w-full h-12" disabled={loading}>
+  {loading ? "Signing in..." : "Sign In"}
+</Button>
               <p className="text-center text-sm text-muted-foreground">
                 Don't have an account?{" "}
                 <Link href="/signup" className="text-primary hover:underline">

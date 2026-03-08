@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import ApiSocket from "@/utils/ApiSocket";
+import * as Sentry from "@sentry/react";
 
 const LandlordContext = createContext(null);
 
@@ -46,7 +47,7 @@ export const LandlordProvider = ({ children }) => {
 
       if (profileData) {
         setProfile(profileData);
-        console.log("Fetched landlord profile:", profileData);
+        // console.log("Fetched landlord profile:", profileData);
 
         const status =
           profileData?.verification?.status || LORD.PENDING;
@@ -54,7 +55,8 @@ export const LandlordProvider = ({ children }) => {
         setLordStatus(status);
       }
     } catch (error) {
-      console.error("Error fetching profile:", error);
+      // console.error("Error fetching profile:", error);
+      Sentry.captureException("Error fetching profile:", error)
       setError(error);
       setProfile(null);
       setLordStatus(LORD.PENDING);
@@ -70,7 +72,8 @@ export const LandlordProvider = ({ children }) => {
       return plansdata;
     }
   } catch (error) {
-    console.error("Error fetching plans:", error);
+    // console.error("Error fetching plans:", error);
+    Sentry.captureException("Error fetching plans:", error)
     setError(error);
   }
  }
@@ -88,7 +91,7 @@ export const LandlordProvider = ({ children }) => {
     getPlans,
   };
 
-  console.log("LandlordContext profile:", profile);
+  // console.log("LandlordContext profile:", profile);
 
   return (
     <LandlordContext.Provider value={value}>

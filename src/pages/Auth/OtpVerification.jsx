@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
+import * as Sentry from "@sentry/react";
 
 export default function OtpVerification() {
   const {
     verifyOtp,
-    logout,
+    remove,
     signup,
     authStatus,
     error,
@@ -17,8 +18,8 @@ export default function OtpVerification() {
 
   const [otp, setOtp] = useState("");
   const [resendTimer, setResendTimer] = useState(60);
+  const [loading, setLoading] = useState(false);
 
-  const loading = authStatus === "verifying_otp";
   const canResend = resendTimer === 0;
 
   /* ---------------- TIMER ---------------- */
@@ -26,7 +27,13 @@ export default function OtpVerification() {
     if (resendTimer <= 0) return;
 
     const interval = setInterval(() => {
-      setResendTimer((t) => t - 1);
+      setResendTimer((t) => {
+        if (t <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return t - 1;
+      });
     }, 1000);
 
     return () => clearInterval(interval);
@@ -38,29 +45,35 @@ export default function OtpVerification() {
   /* ---------------- HANDLERS ---------------- */
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
+    if (otp.length < 4) return;
 
-    if (otp.length < 4) {
-      console.warn("[OTP] Invalid OTP length");
-      return;
+    try {
+      setLoading(true);
+      await verifyOtp({ otp });
+    } catch (err) {
+      Sentry.captureException(err);
+    } finally {
+      setLoading(false);
     }
-
-    await verifyOtp({ otp });
   };
 
   const handleResend = async () => {
-    if (!signupPayload) {
-      console.error("[OTP] Missing signup payload");
-      return;
-    }
+    if (!signupPayload || resendTimer > 0) return; // prevent multiple clicks
 
-    console.log("[OTP] Resending OTP...");
-    setResendTimer(60);
-    await signup(signupPayload);
+    setResendTimer(60); // restart timer
+    setLoading(true);
+
+    try {
+      await signup(signupPayload);
+    } catch (err) {
+      Sentry.captureException(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCancel = () => {
-    console.log("[OTP] Signup cancelled");
-    logout();
+    remove();
   };
 
   /* ---------------- UI ---------------- */
@@ -95,18 +108,16 @@ export default function OtpVerification() {
         <div className="flex justify-between items-center text-sm">
           <button
             onClick={handleResend}
-            disabled={!canResend}
+            disabled={!canResend || loading}
             className={`underline ${
-              canResend ? "text-blue-600" : "text-gray-400"
+              canResend && !loading ? "text-blue-600" : "text-gray-400"
             }`}
           >
             Resend OTP
           </button>
 
           {!canResend && (
-            <span className="text-gray-500">
-              Resend in {resendTimer}s
-            </span>
+            <span className="text-gray-500">Resend in {resendTimer}s</span>
           )}
         </div>
 

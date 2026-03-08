@@ -41,8 +41,9 @@ const handleResponse = async (res) => {
 
   if (res.status === 401) {
     window.dispatchEvent(new Event("auth:logout"));
-    const err = new Error("Session expired");
-    Sentry.captureException(err);
+    const errorMessage = data?.error || `HTTP ${res.status}`;
+    const err = new Error(errorMessage);
+    // Sentry.captureException(err);
     throw err;
   }
 
@@ -73,7 +74,7 @@ async function apiRequest(path, options = {}) {
 
   // ✅ Always read CSRF token at request time
   const csrfToken = getCsrfToken();
-  console.log("[API DEBUG] CSRF Token at request:", csrfToken);
+  // console.log("[API DEBUG] CSRF Token at request:", csrfToken);
 
   const headers = {
     ...(options.headers || {}),
@@ -88,9 +89,9 @@ async function apiRequest(path, options = {}) {
   if (["POST", "PUT", "PATCH", "DELETE"].includes(method)) {
     if (csrfToken) {
       headers["X-CSRF-Token"] = csrfToken;
-      console.log("[API DEBUG] CSRF Header Set");
+      // console.log("[API DEBUG] CSRF Header Set");
     } else {
-      console.warn("[API DEBUG] CSRF Token missing for mutating request!");
+      // console.warn("[API DEBUG] CSRF Token missing for mutating request!");
     }
   }
 
@@ -105,7 +106,7 @@ async function apiRequest(path, options = {}) {
       : undefined,
   };
 
-  console.log("[API DEBUG] Fetch Options:", fetchOptions);
+  // console.log("[API DEBUG] Fetch Options:", fetchOptions);
 
   try {
     const res = await fetch(`${API_BASE_URL}${path}`, fetchOptions);

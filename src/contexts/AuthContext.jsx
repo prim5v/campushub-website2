@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import ApiSocket from "@/utils/ApiSocket";
+import * as Sentry from "@sentry/react";
 
 
 
@@ -19,19 +20,19 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("auth_user");
     const parsedUser = storedUser ? JSON.parse(storedUser) : null;
-    console.log("[Auth][Init] Loaded user from localStorage:", parsedUser);
+    // console.log("[Auth][Init] Loaded user from localStorage:", parsedUser);
     return parsedUser;
   });
 
   const [authStatus, setAuthStatus] = useState(() => {
     const status = localStorage.getItem("auth_status") || AUTH.IDLE;
-    console.log("[Auth][Init] Loaded authStatus from localStorage:", status);
+    // console.log("[Auth][Init] Loaded authStatus from localStorage:", status);
     return status;
   });
 
   const [pendingEmail, setPendingEmail] = useState(() => {
     const email = localStorage.getItem("pending_email") || null;
-    console.log("[Auth][Init] Loaded pendingEmail from localStorage:", email);
+    // console.log("[Auth][Init] Loaded pendingEmail from localStorage:", email);
     return email;
   });
 
@@ -55,7 +56,7 @@ export const AuthProvider = ({ children }) => {
      LOCAL STORAGE SYNC
   ========================= */
   useEffect(() => {
-    console.log("[Auth][useEffect] Updating localStorage for user:", user);
+    // console.log("[Auth][useEffect] Updating localStorage for user:", user);
     if (user) localStorage.setItem("auth_user", JSON.stringify(user));
     else localStorage.removeItem("auth_user");
   }, [user]);
@@ -68,7 +69,7 @@ export const AuthProvider = ({ children }) => {
 
   
   useEffect(() => {
-  console.log("[Auth][useEffect] Updating localStorage for authStatus:", authStatus);
+  // console.log("[Auth][useEffect] Updating localStorage for authStatus:", authStatus);
 
   if (authStatus && authStatus !== AUTH.LOADING) {
     localStorage.setItem("auth_status", authStatus);
@@ -79,13 +80,13 @@ export const AuthProvider = ({ children }) => {
 
 
   useEffect(() => {
-    console.log("[Auth][useEffect] Updating localStorage for pendingEmail:", pendingEmail);
+    // console.log("[Auth][useEffect] Updating localStorage for pendingEmail:", pendingEmail);
     if (pendingEmail) localStorage.setItem("pending_email", pendingEmail);
     else localStorage.removeItem("pending_email");
   }, [pendingEmail]);
 
     useEffect(() => {
-    console.log("[Auth][useEffect] Updating localStorage for checkoutId:", checkoutId);
+    // console.log("[Auth][useEffect] Updating localStorage for checkoutId:", checkoutId);
     if (checkoutId) localStorage.setItem("checkoutId", checkoutId);
     else localStorage.removeItem("checkoutId");
   }, [checkoutId]);
@@ -94,37 +95,39 @@ export const AuthProvider = ({ children }) => {
      HELPERS
   ========================= */
   const resetError = () => {
-    console.log("[Auth] Resetting error");
+    // console.log("[Auth] Resetting error");
     setError(null);
   };
 
   /* =========================
      SIGNUP
   ========================= */
-  const signup = async ({ email, password, username, role }) => {
-    console.log("[Auth][Signup] Called with:", { email, username, role, password: "***hidden***" });
+  const signup = async ({ email, password, username, role, institution, acceptedTerms }) => {
+    // console.log("[Auth][Signup] Called with:", { email, username, role, password: "***hidden***" });
 
-    setAuthStatus(AUTH.LOADING);
+    // setAuthStatus(AUTH.LOADING);
     resetError();
 
     try {
-      console.log("[Auth][Signup] Sending request to /auth/signup");
-      const res = await ApiSocket.post("/auth/signup", { email, password, username, role });
-      console.log("[Auth][Signup] Raw response:", res);
+      // console.log("[Auth][Signup] Sending request to /auth/signup");
+      const res = await ApiSocket.post("/auth/signup", { email, password, username, role, institution, acceptedTerms });
+      // console.log("[Auth][Signup] Raw response:", res);
 
       if (res?.status === "verify_otp") {
-        console.log("[Auth][Signup] OTP required for:", res.email);
+        // console.log("[Auth][Signup] OTP required for:", res.email);
         setPendingEmail(res.email);
-        setSignupPayload({ email, password, username, role });
+        setSignupPayload({ email, password, username, role, institution, acceptedTerms });
         setAuthStatus(AUTH.OTP_REQUIRED);
 
         return { otpRequired: true, email: res.email };
       }
 
-      console.error("[Auth][Signup] Unexpected response shape:", res);
+      // console.error("[Auth][Signup] Unexpected response shape:", res);
+      Sentry.captureException(res)
       throw new Error("Unexpected signup response");
     } catch (err) {
-      console.error("[Auth][Signup] ERROR:", err);
+      // console.error("[Auth][Signup] ERROR:", err);
+      Sentry.captureException("[Auth][Signup] ERROR:", err)
       setAuthStatus(AUTH.UNAUTHENTICATED);
       setError(err?.error || err?.message || "Signup failed");
       return null;
@@ -157,7 +160,8 @@ const mpesaSignup = async (payload) => {
         return true;
       }
   } catch (err) {
-    console.error("[Auth][Mpesa] ERROR:", err);
+    // console.error("[Auth][Mpesa] ERROR:", err);
+    Sentry.captureException("[Auth][Mpesa] ERROR:", err)
     setAuthStatus(AUTH.UNAUTHENTICATED);
     setError(err?.error || err?.message || "Invalid Mpesa push");
     return false;
@@ -188,7 +192,8 @@ const paymentstatusCheck = async (checkoutId) =>{
 }
     
   }catch (err) {
-  console.error("[Auth][Mpesa] ERROR:", err);
+  // console.error("[Auth][Mpesa] ERROR:", err);
+  Sentry.captureException("[Auth][Mpesa] ERROR:", err);
 
   // session expired → hard stop
   if (err?.status === 401) {
@@ -211,27 +216,29 @@ const paymentstatusCheck = async (checkoutId) =>{
      VERIFY OTP
   ========================= */
   const verifyOtp = async ({ otp }) => {
-    console.log("[Auth][VerifyOtp] Called with:", { otp });
-    setAuthStatus(AUTH.LOADING);
+    // console.log("[Auth][VerifyOtp] Called with:", { otp });
+    // setAuthStatus(AUTH.LOADING);
     resetError();
 
     try {
-      console.log("[Auth][VerifyOtp] Sending request to /auth/verify-otp");
+      // console.log("[Auth][VerifyOtp] Sending request to /auth/verify-otp");
       const res = await ApiSocket.post("/auth/verify-otp", { email: pendingEmail, otp });
-      console.log("[Auth][VerifyOtp] Raw response:", res);
+      // console.log("[Auth][VerifyOtp] Raw response:", res);
 
       if (res?.status === "success") {
-        console.log("[Auth][VerifyOtp] OTP verified. User:", res.user);
+        // console.log("[Auth][VerifyOtp] OTP verified. User:", res.user);
         setUser(res.user);
         setPendingEmail(null);
         setAuthStatus(AUTH.AUTHENTICATED);
         return true;
       }
 
-      console.error("[Auth][VerifyOtp] Verification failed:", res);
+      // console.error("[Auth][VerifyOtp] Verification failed:", res);
+      Sentry.captureException("[Auth][VerifyOtp] Verification failed:", res)
       throw new Error("OTP verification failed");
     } catch (err) {
-      console.error("[Auth][VerifyOtp] ERROR:", err);
+      // console.error("[Auth][VerifyOtp] ERROR:", err);
+      Sentry.captureException("[Auth][VerifyOtp] ERROR:", err)
       setAuthStatus(AUTH.OTP_REQUIRED);
       setError(err?.error || err?.message || "Invalid or expired OTP");
       return false;
@@ -242,26 +249,28 @@ const paymentstatusCheck = async (checkoutId) =>{
      LOGIN
   ========================= */
   const login = async ({ email, password }) => {
-    console.log("[Auth][Login] Called with:", { email, password: "***hidden***" });
-    setAuthStatus(AUTH.LOADING);
+    // console.log("[Auth][Login] Called with:", { email, password: "***hidden***" });
+    // setAuthStatus(AUTH.LOADING);
     resetError();
 
     try {
-      console.log("[Auth][Login] Sending request to /auth/login");
+      // console.log("[Auth][Login] Sending request to /auth/login");
       const res = await ApiSocket.post("/auth/login", { email, password });
-      console.log("[Auth][Login] Raw response:", res);
+      // console.log("[Auth][Login] Raw response:", res);
 
       if (res?.status === "success") {
-        console.log("[Auth][Login] Authenticated user:", res.user);
+        // console.log("[Auth][Login] Authenticated user:", res.user);
         setUser(res.user);
         setAuthStatus(AUTH.AUTHENTICATED);
         return true;
       }
 
-      console.error("[Auth][Login] Invalid response:", res);
+      // console.error("[Auth][Login] Invalid response:", res);
+      Sentry.captureException("[Auth][Login] Invalid response:", res)
       throw new Error("Invalid login response");
     } catch (err) {
-      console.error("[Auth][Login] ERROR:", err);
+      // console.error("[Auth][Login] ERROR:", err);
+      Sentry.captureException("[Auth][Login] ERROR:", err)
       setAuthStatus(AUTH.UNAUTHENTICATED);
       setError(err?.error || err?.message || "Login failed");
       return false;
@@ -280,20 +289,20 @@ const paymentstatusCheck = async (checkoutId) =>{
   
   useEffect(() => {
   const bootstrapAuth = async () => {
-    console.log("[Auth][Bootstrap] Checking session…");
+    // console.log("[Auth][Bootstrap] Checking session…");
 
     try {
       const res = await ApiSocket.get("/auth/profile"); // protected route
 
       if (res?.user) {
-        console.log("[Auth][Bootstrap] Session valid:", res.user);
+        // console.log("[Auth][Bootstrap] Session valid:", res.user);
         setUser(res.user);
         setAuthStatus(AUTH.AUTHENTICATED);
       } else {
         throw new Error("No user");
       }
     } catch (err) {
-      console.warn("[Auth][Bootstrap] No valid session");
+      // console.warn("[Auth][Bootstrap] No valid session");
       setUser(null);
       setAuthStatus(AUTH.UNAUTHENTICATED);
     }
@@ -310,26 +319,62 @@ const paymentstatusCheck = async (checkoutId) =>{
      LOGOUT
   ========================= */
   const logout = () => {
-    console.log("[Auth][Logout] Logging out user");
-    setUser(null);
-    setAuthStatus(AUTH.UNAUTHENTICATED);
-    setPendingEmail(null);
 
-    console.log("[Auth][Logout] Clearing localStorage");
-    localStorage.removeItem("auth_user");
-    localStorage.removeItem("auth_status");
-    localStorage.removeItem("pending_email");
-    setCheckoutId(null);
-    setMpesaStatus(null);
-    setMpesaMessage(null);
-    localStorage.removeItem("checkoutId");
+  if (!user || authStatus !== AUTH.AUTHENTICATED) {
+    return;
+  }
 
-  };
+  setUser(null);
+  setAuthStatus(AUTH.UNAUTHENTICATED);
+  setPendingEmail(null);
+
+  localStorage.removeItem("auth_user");
+  localStorage.removeItem("auth_status");
+  localStorage.removeItem("pending_email");
+
+  setCheckoutId(null);
+  setMpesaStatus(null);
+  setMpesaMessage(null);
+
+  localStorage.removeItem("checkoutId");
+};
+
+const remove =()=>{
+  setUser(null);
+  setAuthStatus(AUTH.UNAUTHENTICATED);
+  setPendingEmail(null);
+
+  localStorage.removeItem("auth_user");
+  localStorage.removeItem("auth_status");
+  localStorage.removeItem("pending_email");
+
+  setCheckoutId(null);
+  setMpesaStatus(null);
+  setMpesaMessage(null);
+
+  localStorage.removeItem("checkoutId");
+}
+  // const logout = () => {
+  //   // console.log("[Auth][Logout] Logging out user");
+  //   setUser(null);
+  //   setAuthStatus(AUTH.UNAUTHENTICATED);
+  //   setPendingEmail(null);
+
+  //   // console.log("[Auth][Logout] Clearing localStorage");
+  //   localStorage.removeItem("auth_user");
+  //   localStorage.removeItem("auth_status");
+  //   localStorage.removeItem("pending_email");
+  //   setCheckoutId(null);
+  //   setMpesaStatus(null);
+  //   setMpesaMessage(null);
+  //   localStorage.removeItem("checkoutId");
+
+  // };
 
   // logout on token expiration 
   useEffect(() => {
   const handleLogout = () => {
-    console.warn("[Auth] Session expired — logging out");
+    // console.warn("[Auth] Session expired — logging out");
     logout();
   };
 
@@ -342,9 +387,9 @@ const paymentstatusCheck = async (checkoutId) =>{
   /* =========================
      CONTEXT VALUE
   ========================= */
-  const value = { user, authStatus, pendingEmail, signupPayload, error, mpesaMessage, mpesaStatus, checkoutId, signup, verifyOtp, login, logout, mpesaSignup, paymentstatusCheck};
+  const value = { user, authStatus, pendingEmail, signupPayload, error, mpesaMessage, mpesaStatus, checkoutId, signup, verifyOtp, login, logout, remove, mpesaSignup, paymentstatusCheck};
 
-  console.log("[Auth] Current state:", { user, authStatus, pendingEmail,signupPayload, error });
+  // console.log("[Auth] Current state:", { user, authStatus, pendingEmail,signupPayload, error });
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
