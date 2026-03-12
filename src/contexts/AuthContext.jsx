@@ -13,6 +13,7 @@ export const AUTH = {
   UNAUTHENTICATED: "unauthenticated",
   OTP_REQUIRED: "otp_required",
   MPESA: "mpesa",
+  CONSENT_REQUIRED: "consent_required",
 };
 
 export const AuthProvider = ({ children }) => {
@@ -122,9 +123,25 @@ export const AuthProvider = ({ children }) => {
         return { otpRequired: true, email: res.email };
       }
 
-      // console.error("[Auth][Signup] Unexpected response shape:", res);
-      Sentry.captureException(res)
+      // Detect email send failure
+      if (res?.status === 500 || res?.error === "failed to send email") {
+        // Call API to notify the user via email
+        // await ApiSocket.post("/auth/signup-failure-notify", { email, username });
+
+        // Show consent UI
+        setAuthStatus(AUTH.CONSENT_REQUIRED);
+        setSignupPayload({ email, password, username, role, institution, acceptedTerms });
+        setPendingEmail(res.email);
+        return { consentRequired: true };
+      }
+
+      // Fallback for unexpected responses
+      Sentry.captureException(res);
       throw new Error("Unexpected signup response");
+
+      // console.error("[Auth][Signup] Unexpected response shape:", res);
+      // Sentry.captureException(res) // messenger block
+      // throw new Error("Unexpected signup response");
     } catch (err) {
       // console.error("[Auth][Signup] ERROR:", err);
       Sentry.captureException("[Auth][Signup] ERROR:", err)
@@ -341,7 +358,7 @@ const paymentstatusCheck = async (checkoutId) =>{
 
 const remove =()=>{
   setUser(null);
-  setAuthStatus(AUTH.UNAUTHENTICATED);
+  setAuthStatus(AUTH.IDLE);
   setPendingEmail(null);
 
   localStorage.removeItem("auth_user");
@@ -354,22 +371,7 @@ const remove =()=>{
 
   localStorage.removeItem("checkoutId");
 }
-  // const logout = () => {
-  //   // console.log("[Auth][Logout] Logging out user");
-  //   setUser(null);
-  //   setAuthStatus(AUTH.UNAUTHENTICATED);
-  //   setPendingEmail(null);
 
-  //   // console.log("[Auth][Logout] Clearing localStorage");
-  //   localStorage.removeItem("auth_user");
-  //   localStorage.removeItem("auth_status");
-  //   localStorage.removeItem("pending_email");
-  //   setCheckoutId(null);
-  //   setMpesaStatus(null);
-  //   setMpesaMessage(null);
-  //   localStorage.removeItem("checkoutId");
-
-  // };
 
   // logout on token expiration 
   useEffect(() => {

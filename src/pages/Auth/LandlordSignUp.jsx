@@ -5,13 +5,15 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check } from "lucide-react";
+// import { Check } from "lucide-react";
 import { ApiSocket } from "@/utils/ApiSocket";
 import OtpVerification from "../Auth/OtpVerification";
 import LoadingScreen from "../Auth/LoadingScreen"
 
 import { useAuth } from "@/contexts/AuthContext";
-
+import * as Sentry from "@sentry/react";
+import { Eye, EyeOff, Check } from "lucide-react";
+import { Link } from "wouter";
 /* ================= PAGE ================= */
 
 export default function LandlordSignUp() {
@@ -27,12 +29,14 @@ export default function LandlordSignUp() {
   });
   const [location, setLocation] = useLocation();
   const [loading, setLoading] = useState(false);
+  const [loading2, setLoading2] = useState(false);
   const [planerror, setPlanError] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("mpesa");
 
   const params = new URLSearchParams(window.location.search);
   const planId = params.get("plan");
   const [screen, setScreen] = useState("form");
+  const [showPassword, setShowPassword] = useState(false);
   // possible values: "form", "otp", "mpesa", "creating", "success"
 
 
@@ -77,7 +81,9 @@ useEffect(() => {
     username: "",
     email: "",
     password: "",
+    confirmPassword: "",
     role: "landlord",
+    acceptedTerms: false,
   });
 
 
@@ -127,8 +133,48 @@ useEffect(() => {
 
   
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  // async function handleSubmit(e) {
+  //   e.preventDefault();
+
+  //   if(form.password != form.confirmPassword){
+  //     alert("Passwords do not match");
+  //     return;
+  //   }
+
+  //   const payload = {
+  //     user: form,
+  //     plan: selectedPlan,
+  //     payment: {
+  //       method: paymentMethod,
+  //       mpesaPhone,
+  //       card,
+  //     },
+  //   };
+
+  //   if (selectedPlan.price === 0) {
+  //     await signup(form);
+  //     console.log("SUBMIT form:", form);
+  //     // Free plan → show OTP verification screen
+  //     // setScreen("otp");
+  //   } else if (paymentMethod === "mpesa") {
+  //     await mpesaSignup(payload)
+  //     console.log("SUBMIT PAYLOAD:", payload);
+  //     // Paid plan → show M-Pesa payment screen
+  //     // setScreen("mpesa");
+  //   }
+  //   // alert("Signup + payment submitted (mock). Check console.");
+  //   // alert("Error");
+  // }
+async function handleSubmit(e) {
+  e.preventDefault();
+
+  try {
+    setLoading2(true);
+
+    if (form.password != form.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
 
     const payload = {
       user: form,
@@ -143,18 +189,21 @@ useEffect(() => {
     if (selectedPlan.price === 0) {
       await signup(form);
       console.log("SUBMIT form:", form);
-      // Free plan → show OTP verification screen
       // setScreen("otp");
-    } else if (paymentMethod === "mpesa") {
-      await mpesaSignup(payload)
+    } 
+    else if (paymentMethod === "mpesa") {
+      await mpesaSignup(payload);
       console.log("SUBMIT PAYLOAD:", payload);
-      // Paid plan → show M-Pesa payment screen
       // setScreen("mpesa");
     }
-    // alert("Signup + payment submitted (mock). Check console.");
-    // alert("Error");
-  }
 
+  } catch (error) {
+    console.error("Signup or payment failed:", error);
+    alert(error?.message || "An error occurred during signup.");
+  } finally {
+    setLoading2(false);
+  }
+}
   
 
 
@@ -193,7 +242,63 @@ if (planerror && planerror !== "Plan not found") {
               <div className="space-y-4">
                 <Input name="username" placeholder="Full name" value={form.username} onChange={handleChange} required />
                 <Input name="email" type="email" placeholder="Email address" value={form.email} onChange={handleChange} required />
-                <Input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required />
+                <div className="relative">
+                <Input name="password"
+                  type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={form.password} 
+                    onChange={handleChange}
+                      required />
+                      <button
+                      type="button"
+                      onClick={()=> setShowPassword((prev) => !prev)}
+                      aria-label="Toggle password visibility"
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground"
+                      >
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4"/>
+
+                        ):(
+                          <Eye className="h-4 w-4" />
+                        )
+                        }
+
+                      </button>
+                </div>
+                <div>
+                                  {/* <Label>Confirm Password</Label> */}
+                                  <Input
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="••••••••"
+                                    value={form.confirmPassword}
+                                    onChange={(e) =>
+                                      setForm({ ...form, confirmPassword: e.target.value })
+                                    }
+                                    required
+                                  />
+                                </div>
+                
+                                <div className="flex items-start gap-2 text-sm">
+                                  <input
+                                    type="checkbox"
+                                    checked={form.acceptedTerms}
+                                    onChange={(e) =>
+                                      setForm({ ...form, acceptedTerms: e.target.checked })
+                                    }
+                                    required
+                                  />
+                
+                                  <span>
+                                    I agree to the{" "}
+                                    <Link href="/terms-of-service" className="text-primary underline">
+                                      Terms of Service
+                                    </Link>{" "}
+                                    and{" "}
+                                    <Link href="/privacy-policy" className="text-primary underline">
+                                      Privacy Policy
+                                    </Link>
+                                  </span>
+                                </div>
               </div>
 
               {/* ===== Payment Methods ===== */}
@@ -243,9 +348,19 @@ if (planerror && planerror !== "Plan not found") {
                 </div>
               )}
 
-              <Button className="w-full h-12 text-lg">
-                {selectedPlan.price === 0 ? "Create Free Account" : "Pay & Create Account"}
-              </Button>
+             <Button
+  type="submit"
+  disabled={loading2}
+  className="w-full h-12 text-lg"
+>
+  {loading2
+    ? selectedPlan.price === 0
+      ? "Creating Free Account..."
+      : "Creating Account..."
+    : selectedPlan.price === 0
+    ? "Create Free Account"
+    : "Pay & Create Account"}
+</Button>
             </form>
           </CardContent>
         </Card>

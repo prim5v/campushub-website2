@@ -44,20 +44,22 @@ export function Footer() {
             <h4 className="font-semibold mb-4">Contact Us</h4>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-primary" />
-                {/* support@campushub.co.ke */}
-                emax27348@gmail.com
+                <Mail className="w-4 h-4 text-primary shrink-0" />
+                <span>support@campushub.yreen.co.ke</span>
               </li>
+
               <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-primary" />
-                +254 113899517
+                <Phone className="w-4 h-4 text-primary shrink-0" />
+                <span>+254 113899517</span>
               </li>
+
               <li className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-primary" />
-                Nairobi, Kenya
+                <MapPin className="w-4 h-4 text-primary shrink-0" />
+                <span>Nairobi, Kenya</span>
               </li>
             </ul>
           </div>
+
         </div>
 
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">

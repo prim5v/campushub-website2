@@ -40,6 +40,7 @@ import { useState, useEffect } from "react";
 import ApiSocket from "@/utils/ApiSocket";
 import ForgotPassword from "./pages/comrade/ForgotPassword";
 import ResetPassword from "./pages/comrade/ResetPassword";
+import SignupConsentPage from "./pages/Auth/SignupConsentScreen";
 
 
 
@@ -158,6 +159,16 @@ if (authStatus === "authenticated") {
     );
   }
 
+  if (authStatus === "consent_required"){
+    return(
+      <Switch>
+        <Route>
+          <SignupConsentPage/>
+        </Route>
+      </Switch>
+    )
+  }
+
   // when loading later can add loading from diff contexts
 
   if (authStatus === "loading") {
@@ -181,6 +192,7 @@ if (authStatus === "authenticated") {
 
     )
   }
+    
 
   // routes for authStatus idle
   return (
