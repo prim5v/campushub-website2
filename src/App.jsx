@@ -43,6 +43,7 @@ import ResetPassword from "./pages/comrade/ResetPassword";
 import SignupConsentPage from "./pages/Auth/SignupConsentScreen";
 import RoomRequestController from "./components/RoomRequestController";
 import RequestsPage from "./pages/Request";
+import { Analytics } from "@vercel/analytics/react";
 
 
 
@@ -294,6 +295,7 @@ if (maintenance.active ) return <MaintenanceScreen message={maintenance.message}
         <AppRedirector/>
         <AuthNudgeController />
         <MarketplaceNudgeController />
+        <Analytics/>
         <RoomRequestController/>
         <CookieConsentModal />
         <Router />
