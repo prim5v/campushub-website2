@@ -44,6 +44,7 @@ import SignupConsentPage from "./pages/Auth/SignupConsentScreen";
 import RoomRequestController from "./components/RoomRequestController";
 import RequestsPage from "./pages/Request";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 
 
@@ -296,6 +297,7 @@ if (maintenance.active ) return <MaintenanceScreen message={maintenance.message}
         <AuthNudgeController />
         <MarketplaceNudgeController />
         <Analytics/>
+        <SpeedInsights/> 
         <RoomRequestController/>
         <CookieConsentModal />
         <Router />
