@@ -24,6 +24,7 @@ import {
   List,
   ChevronDown
 } from "lucide-react";
+import { Switch, Route, Redirect, useLocation } from "wouter";
 
 
 
@@ -42,6 +43,7 @@ export default function Listings() {
   const [sortBy, setSortBy] = useState("recommended");
   const [favorites, setFavorites] = useState([]);
 
+  const [, setLocation] = useLocation();
 
   
 
@@ -468,28 +470,60 @@ useEffect(() => {
             ))}
           </div>
         ) : (
-          <Card className="border-border/50">
-            <CardContent className="py-16 text-center">
-              <MapPin className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">No rooms found</h3>
-              <p className="text-muted-foreground mb-4">
-                Try adjusting your filters or search query
-              </p>
-              <Button 
-                variant="outline"
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedType("All Types");
-                  setSelectedDistance("Any Distance");
-                  setVerifiedOnly(false);
-                  setPriceRange([0, 30000]);
-                }}
-                data-testid="button-reset-search"
-              >
-                Reset Filters
-              </Button>
-            </CardContent>
-          </Card>
+         <Card className="border-border/50">
+  <CardContent className="py-16 text-center space-y-5">
+
+    {/* Icon */}
+    <div className="flex justify-center">
+      <div className="bg-muted p-4 rounded-full">
+        <MapPin className="w-10 h-10 text-muted-foreground" />
+      </div>
+    </div>
+
+    {/* Title */}
+    <h3 className="text-xl font-semibold">
+      No Rooms Found
+    </h3>
+
+    {/* Description */}
+    <p className="text-muted-foreground max-w-md mx-auto">
+      We couldn't find any rooms matching your filters right now.
+      Try adjusting your search or submit a request and CampusHub
+      will help find a room that fits your needs.
+    </p>
+
+    {/* Actions */}
+    <div className="flex flex-col sm:flex-row justify-center gap-3 pt-2">
+
+      {/* Reset Filters */}
+      <Button
+        variant="outline"
+        onClick={() => {
+          setSearchQuery("");
+          setSelectedType("All Types");
+          setSelectedDistance("Any Distance");
+          setVerifiedOnly(false);
+          setPriceRange([0, 30000]);
+        }}
+        data-testid="button-reset-search"
+      >
+        Reset Filters
+      </Button>
+
+      {/* Make Request */}
+    <Button onClick={() => setLocation("/room-request")}>
+      Request a Room
+    </Button>
+
+    </div>
+
+    {/* Extra helper text */}
+    <p className="text-xs text-muted-foreground pt-2">
+      Submit a request and CampusHub will contact you when a matching room becomes available.
+    </p>
+
+  </CardContent>
+</Card>
         )}
 
 

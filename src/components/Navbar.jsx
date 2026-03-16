@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { Button } from "./ui/button";
-import { Home, Search, Building2, User, Menu, X, LogOut, ShoppingCart } from "lucide-react";
+import { Home, Search, Building2, User, Menu, X, LogOut, ShoppingCart, ClipboardList } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -54,17 +54,26 @@ export function Navbar() {
           </div>
 
           {/* Profile / Auth buttons */}
-          <div className="hidden md:flex items-center gap-3 relative">
-            {!user ? (
-              <>
-                <Link href="/signin">
-                  <Button variant="ghost">Log In</Button>
-                </Link>
-                <Link href="/signup">
-                  <Button>Sign Up</Button>
-                </Link>
-              </>
-            ) : (
+        <div className="hidden md:flex items-center gap-3 relative">
+
+          {/* Make Room Request Button */}
+          <Link href="/room-request">
+            <Button className="gap-2">
+              <ClipboardList className="w-4 h-4" />
+              Make Request
+            </Button>
+          </Link>
+
+          {!user ? (
+            <>
+              <Link href="/signin">
+                <Button variant="ghost">Log In</Button>
+              </Link>
+              <Link href="/signup">
+                <Button>Sign Up</Button>
+              </Link>
+            </>
+          ) : (
               <div className="relative">
                 <button
                   onClick={() => setProfileOpen(!profileOpen)}
@@ -127,6 +136,12 @@ export function Navbar() {
             ))}
 
             <div className="pt-4 border-t border-border/50 space-y-2">
+            <Link href="/room-request">
+              <Button className="w-full justify-start gap-2">
+                <ClipboardList className="w-4 h-4" />
+                Make Room Request
+              </Button>
+            </Link>
               {!user ? (
                 <>
                   <Link href="/signin">

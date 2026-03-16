@@ -41,6 +41,8 @@ import ApiSocket from "@/utils/ApiSocket";
 import ForgotPassword from "./pages/comrade/ForgotPassword";
 import ResetPassword from "./pages/comrade/ResetPassword";
 import SignupConsentPage from "./pages/Auth/SignupConsentScreen";
+import RoomRequestController from "./components/RoomRequestController";
+import RequestsPage from "./pages/Request";
 
 
 
@@ -72,6 +74,7 @@ if (authStatus === "unauthenticated") {
       <Route path="/terms-of-service" component={TermsOfService} />
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/reset-password" component={ResetPassword} />
+      <Route path="/room-request" component={RequestsPage} />
 
       {/* <Route component={Unauthorized}/> */}
 
@@ -130,6 +133,7 @@ if (authStatus === "authenticated") {
       <Route path="/safety-tips" component={SafetyTips} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms-of-service" component={TermsOfService} />
+      <Route path="/room-request" component={RequestsPage} />
       <Route path="/landlord-signup">
         <LandlordSignUp />
       </Route>
@@ -210,6 +214,7 @@ if (authStatus === "authenticated") {
       <Route path="/terms-of-service" component={TermsOfService} />
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/reset-password" component={ResetPassword} />
+      <Route path="/room-request" component={RequestsPage} />
       <Route path="/landlord-signup">
         <LandlordSignUp />
       </Route>
@@ -289,6 +294,7 @@ if (maintenance.active ) return <MaintenanceScreen message={maintenance.message}
         <AppRedirector/>
         <AuthNudgeController />
         <MarketplaceNudgeController />
+        <RoomRequestController/>
         <CookieConsentModal />
         <Router />
       </TooltipProvider>
