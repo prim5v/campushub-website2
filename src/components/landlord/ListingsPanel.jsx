@@ -8,6 +8,7 @@ import { MapPin, Plus, Pencil, Trash2, ImageIcon, Grid3X3, List, SlidersHorizont
 
 import AddListingModal from "@/components/landlord/AddListingModal";
 import ApiSocket from "@/utils/ApiSocket";
+import PageTracker from "../PageTracker";
 
 export default function LandlordListings() {
   const [listings, setListings] = useState([]);
@@ -89,6 +90,7 @@ export default function LandlordListings() {
 
   return (
     <div className="min-h-screen bg-background">
+      <PageTracker page="Landlord listings panel"/>
       <main className="pt-20 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}

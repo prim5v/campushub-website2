@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import ApiSocket from "@/utils/ApiSocket";
 import { Home, Bed, Building, Users, Sparkles, DoorOpen, X, Lock, LogIn} from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext"
+import PageTracker from "../components/PageTracker";
 export default function RequestsPage() {
 
   const [step, setStep] = useState(1);
@@ -239,6 +240,8 @@ useEffect(() => {
   if (submitted) {
   return (
     <div className="max-w-xl mx-auto p-6">
+      <PageTracker page="Room request-success" />
+      
       <Card className="shadow-sm border">
         <CardContent className="p-8 text-center space-y-5">
 
@@ -286,6 +289,7 @@ useEffect(() => {
   if (authStatus === "unauthenticated" || authStatus === "idle") {
   return (
     <div className="max-w-md mx-auto p-6">
+      <PageTracker page="Room request sign-in" />
 
   <Card className="shadow-sm border">
 
@@ -330,6 +334,7 @@ useEffect(() => {
 
     // <div className="max-w-3xl mx-auto p-6">
     <div className="max-w-6xl mx-auto p-6 grid md:grid-cols-3 gap-6">
+      <PageTracker page="Room request" />
         <div className="md:col-span-2">
 
       <Card className="shadow-xl">

@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 
 import ApiSocket from "@/utils/ApiSocket";
+import PageTracker from "../PageTracker";
 
 export default function LandlordProperties() {
   const [properties, setProperties] = useState([]);
@@ -85,6 +86,7 @@ export default function LandlordProperties() {
   return (
     <div className="min-h-screen bg-background">
       {/* <Navbar /> */}
+      <PageTracker page="Landlord properties panel"/>
 
       <main className="pt-20 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { AlertCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocation } from "wouter";
+import PageTracker from "../components/PageTracker";
 
 export default function Unauthorized() {
   const { user, authStatus } = useAuth();
@@ -12,6 +13,7 @@ export default function Unauthorized() {
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
+      <PageTracker page="Unauthorized"/>
       <Card className="w-full max-w-md mx-4">
         <CardContent className="pt-6">
           <div className="flex mb-4 gap-2 items-center">

@@ -11,6 +11,7 @@ import { useLocation } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
 import { ErrorSocket } from "@/utils/ErrorSocket";
 import { Link } from "wouter"
+import PageTracker from "../../components/PageTracker";
 const roles = [
   { key: "comrade", label: "Comrade", icon: Users },
   { key: "landlord", label: "Landlord", icon: Building2 },
@@ -75,6 +76,7 @@ export default function SignIn() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <PageTracker page="login"/>
 
       <div className="pt-32 pb-20 flex justify-center px-4">
         <Card className="w-full max-w-md border-border/50 shadow-lg">

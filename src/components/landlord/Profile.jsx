@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useLandlord } from "@/contexts/LandlordContext";
 import { useLocation } from "wouter";
 import { Mail } from "lucide-react";
+import PageTracker from "../PageTracker";
 
 export default function Profile() {
   const { profile } = useLandlord();
@@ -33,6 +34,7 @@ export default function Profile() {
   return (
     <Card>
       <CardContent className="pt-6 space-y-4">
+        {/* <PageTracker page="Landlord profile"/> */}
         {/* Header */}
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">

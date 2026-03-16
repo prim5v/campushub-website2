@@ -14,6 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import * as Sentry from "@sentry/react";
 import { Eye, EyeOff, Check } from "lucide-react";
 import { Link } from "wouter";
+import PageTracker from "../../components/PageTracker";
 /* ================= PAGE ================= */
 
 export default function LandlordSignUp() {
@@ -221,6 +222,7 @@ if (planerror && planerror !== "Plan not found") {
 
   return (
     <div className="min-h-screen pt-24 pb-12 px-4 bg-background">
+      <PageTracker page="Landlord sign up"/>
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
 
         {/* ================= LEFT: SIGNUP + PAYMENT ================= */}

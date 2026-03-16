@@ -25,6 +25,7 @@ import {
   ChevronDown
 } from "lucide-react";
 import { Switch, Route, Redirect, useLocation } from "wouter";
+import PageTracker from "../components/PageTracker";
 
 
 
@@ -248,6 +249,7 @@ useEffect(() => {
 )}
 
       <Navbar />
+      <PageTracker page="Listings" />
 
       
   {/* Show banner only if there are no listings */}

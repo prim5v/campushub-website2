@@ -4,6 +4,7 @@ import DashboardHome from "@/components/landlord/DashboardHome";
 import PropertiesPanel from "@/components/landlord/PropertiesPanel";
 import ListingsPanel from "@/components/landlord/ListingsPanel";
 import CommercialModal from "@/components/landlord/CommercialModal";
+import PageTracker from "../components/PageTracker";
 
 export default function LandlordDashboard() {
   const [active, setActive] = useState("dashboard");
@@ -18,6 +19,7 @@ export default function LandlordDashboard() {
 
   return (
     <>
+    <PageTracker page="Landlord Dashboard" />
       <DashboardLayout active={active} setActive={setActive}>
         {active === "dashboard" && <DashboardHome properties={properties} listings={listings} />}
         {active === "properties" && <PropertiesPanel properties={properties} />}

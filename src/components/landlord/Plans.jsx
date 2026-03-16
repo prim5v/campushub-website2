@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { useEffect, useState } from "react";
 import { useLandlord } from "@/contexts/LandlordContext";
+import PageTracker from "../PageTracker";
 
 export default function Plans() {
   const [, setLocation] = useLocation();
@@ -36,6 +37,7 @@ export default function Plans() {
     : plans;
   return (
     <div className="p-6 flex flex-col items-center space-y-6">
+      <PageTracker page="Plans"/>
       {/* Hero Section */}
       <div className="text-center max-w-2xl">
         <h1 className="text-3xl md:text-4xl font-bold mb-2">CampusHub Landlord Plans</h1>

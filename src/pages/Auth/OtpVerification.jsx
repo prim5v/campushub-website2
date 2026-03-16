@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import * as Sentry from "@sentry/react";
+import PageTracker from "../../components/PageTracker";
 
 export default function OtpVerification() {
   const {
@@ -79,6 +80,7 @@ export default function OtpVerification() {
   /* ---------------- UI ---------------- */
   return (
     <Card className="max-w-md mx-auto mt-10 p-6" id="otp-screen">
+      <PageTracker page="OTP verification"/>
       <CardHeader>
         <CardTitle>Verify Email</CardTitle>
         <p className="text-sm text-muted-foreground">

@@ -12,6 +12,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Link } from "wouter"
 import { X } from "lucide-react";
 import * as Sentry from "@sentry/react";
+import PageTracker from "../../components/PageTracker";
 
 
 
@@ -197,6 +198,7 @@ function handleUniversityChange(e) {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <PageTracker page="Sign up"/>
 
       <div className="pt-32 pb-20 flex justify-center px-4">
         <Card className="w-full max-w-md border-border/50 shadow-lg">

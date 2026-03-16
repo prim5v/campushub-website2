@@ -23,6 +23,7 @@ import {
 import { Link } from "wouter";
 import { useRef } from "react";
 import { ApiSocket} from "@/utils/ApiSocket";
+import PageTracker from "../components/PageTracker";
 
 
 const benefits = [
@@ -117,6 +118,7 @@ export default function Landlord() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <PageTracker page="landlord" />
       
       <section className="pt-28 pb-16 bg-gradient-to-b from-primary/5 to-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

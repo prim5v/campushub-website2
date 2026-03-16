@@ -28,6 +28,8 @@ import hero2 from "@assets/generated_images/hero2.jpeg";
 import hero3 from "@assets/generated_images/hero3.jpeg";
 // import ApiSocket from "@/utils/ApiSocket";
 import { useState } from "react";
+// import PageTracker from "@/components/PageTracker";
+import PageTracker from "../components/PageTracker";
 
 const features = [
   {
@@ -234,9 +236,10 @@ useEffect(() => {
 //   return <SkeletonLoading />;
 // }
 
-
+//  <PageTracker page="home" />
   return (
     <div className="min-h-screen bg-background">
+      <PageTracker page="home" />
       <Navbar />
       
       <section className="relative pt-16 overflow-hidden">

@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import * as Sentry from "@sentry/react";
 import ApiSocket from "@/utils/ApiSocket";
+import PageTracker from "../../components/PageTracker";
 
 export default function SignupConsentPage() {
   const { signupPayload, setAuthStatus, remove, pendingEmail } = useAuth();
@@ -137,6 +138,7 @@ const payload = {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <PageTracker page="Sign up Consent-Screen"/>
       <div className="pt-32 pb-20 flex justify-center px-4">
         <Card className="w-full max-w-md border-border/50 shadow-lg">
           <CardHeader className="text-center">

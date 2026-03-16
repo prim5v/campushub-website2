@@ -12,6 +12,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAuth, AUTH } from "../../contexts/AuthContext";
+import PageTracker from "../../components/PageTracker";
 
 export default function MpesaScreen({ onBack }) {
   const { logout, paymentstatusCheck, mpesaMessage, mpesaStatus, checkoutId } = useAuth();
@@ -100,6 +101,7 @@ export default function MpesaScreen({ onBack }) {
   /* ---------------- DEFAULT MPESA PAYMENT SCREEN ---------------- */
   return (
     <Card className="max-w-md mx-auto mt-10 p-6">
+      <PageTracker page="Mpesa screen"/>
       <CardHeader className="space-y-3">
         {/* BACK */}
         <button

@@ -1,5 +1,6 @@
 // src/pages/comrade/MarketPlaceLoad.jsx
 import { useEffect } from "react";
+import PageTracker from "../../components/PageTracker";
 
 export default function MarketPlaceLoad() {
   useEffect(() => {
@@ -13,6 +14,7 @@ export default function MarketPlaceLoad() {
 
   return (
     <div className="w-screen h-screen bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 flex flex-col items-center justify-center overflow-hidden">
+      <PageTracker page="Marketplace loading screen"/>
 
       {/* Logos */}
       <div className="relative w-full h-32 mb-8 overflow-hidden">

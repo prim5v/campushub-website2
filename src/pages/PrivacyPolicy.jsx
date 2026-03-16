@@ -1,10 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Lock } from "lucide-react";
 import { Link } from "wouter";
+import PageTracker from "../components/PageTracker";
 
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <PageTracker page="Privacy policy" />
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
           <Lock className="w-8 h-8 text-primary" />

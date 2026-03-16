@@ -12,6 +12,7 @@ import { Eye, EyeOff } from "lucide-react";
 import * as Sentry from "@sentry/react";
 import { Player } from "@lottiefiles/react-lottie-player";
 import NotFoundAnimation from "../../../assets/lottie/404.json";
+import PageTracker from "../../components/PageTracker";
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
@@ -100,7 +101,7 @@ if (!token || !tokenValid) {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-
+      <PageTracker page="Reset password"/>
       <div className="pt-32 pb-20 flex justify-center px-4">
         <Card className="w-full max-w-md border-border/50 shadow-lg">
           <CardHeader className="text-center space-y-4">

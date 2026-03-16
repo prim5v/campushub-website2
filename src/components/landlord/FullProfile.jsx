@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useLandlord } from "@/contexts/LandlordContext";
 import { useLocation } from "wouter";
 import ApiSocket from "@/utils/ApiSocket";
+import PageTracker from "../PageTracker";
 
 export default function FullProfile() {
   const { profile, refreshProfile } = useLandlord();
@@ -100,6 +101,7 @@ export default function FullProfile() {
     <div className="max-w-3xl mx-auto p-6 space-y-6">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
+          <PageTracker page="Landlord profile"/>
           <CardTitle>My Profile</CardTitle>
           <div className="flex gap-2">
             {!isEditing ? (

@@ -2,10 +2,12 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { ShieldCheck } from "lucide-react";
 import { Link } from "wouter";
+import PageTracker from "../../components/PageTracker";
 
 export default function SafetyTips() {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <PageTracker page="Safety tips"/>
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
           <ShieldCheck className="w-8 h-8 text-primary" />

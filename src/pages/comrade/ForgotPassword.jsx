@@ -9,6 +9,7 @@ import { Footer } from "@/components/Footer";
 import { Link } from "wouter";
 import { ApiSocket } from "@/utils/ApiSocket";
 import * as Sentry from "@sentry/react";
+import PageTracker from "../../components/PageTracker";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -38,6 +39,7 @@ export default function ForgotPassword() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <PageTracker page="Forgot password"/>
 
       <div className="pt-32 pb-20 flex justify-center px-4">
         <Card className="w-full max-w-md border-border/50 shadow-lg">

@@ -9,6 +9,7 @@ import { Footer } from "@/components/Footer";
 import { LogOut, Settings, User, Mail, Shield, Camera, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useLocation } from "wouter";
+import PageTracker from "../../components/PageTracker";
 
 export default function Profile() {
   const { user, setUser, logout } = useAuth();
@@ -55,6 +56,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <PageTracker page="Profile"/>
 
       <div className="pt-32 pb-20 flex justify-center px-4">
         <div className="w-full max-w-3xl space-y-6">
