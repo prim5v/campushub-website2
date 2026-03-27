@@ -302,7 +302,9 @@ useEffect(() => {
         </div>
       </section>
 
-      <section className="py-12 border-b border-border bg-card">
+      {/* check this section */}
+
+      {/* <section className="py-12 border-b border-border bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat) => (
@@ -313,7 +315,7 @@ useEffect(() => {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

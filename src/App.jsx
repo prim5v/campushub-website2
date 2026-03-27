@@ -208,7 +208,12 @@ if (authStatus === "authenticated") {
       <Route path="/room" component={RoomDetail} />
       <Route path="/landlord" component={Landlord} />
       <Route path="/profile" component={Profile} />
-      <Route path="/landlord-dashboard" component={LandlordDashboard} />
+      {/* <Route path="/landlord-dashboard" component={LandlordDashboard} />   */}
+      <Route path="/landlord-dashboard">
+        <ProtectedRoute allowedRoles={["landlord"]}>
+          <LandlordDashboard />
+        </ProtectedRoute>
+      </Route>
       <Route path="/marketplace" component={MarketPlaceLoad} />
       <Route path="/plans" component={Plans} />
       <Route path="/safety-tips" component={SafetyTips} />
@@ -224,6 +229,7 @@ if (authStatus === "authenticated") {
 
       {/* AUTH */}
       <Route path="/signin" component={SignIn} />
+      
       <Route path="/signup" component={SignUp} />
       <Route component={Unauthorized}/>
 
