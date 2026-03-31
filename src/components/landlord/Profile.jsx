@@ -33,12 +33,13 @@ export default function Profile() {
 
   return (
     <Card>
-      <CardContent className="pt-6 space-y-4">
+      <CardContent className="pt-6 space-y-4" onClick={goToCompleteProfile}>
         {/* <PageTracker page="Landlord profile"/> */}
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-            {initials}
+          <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold"
+          onClick={goToCompleteProfile}>
+            <img src={profile?.profile_picture} alt={initials} className="w-full h-full object-cover rounded-full" /> 
           </div>
 
           <div>

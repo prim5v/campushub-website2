@@ -24,7 +24,7 @@ export default function FullProfile() {
     phone: "",
     full_name: "",
     id_number: "",
-    avatar: null, // store new avatar file
+    profile_picture: null, // store new profile picture file
   });
 
   const [previewAvatar, setPreviewAvatar] = useState(null);
@@ -39,10 +39,12 @@ export default function FullProfile() {
       phone: profile.phone || "",
       full_name: profile.verification?.full_name || "",
       id_number: profile.verification?.id_number || "",
-      avatar: null,
+      profile_picture: profile.profile_picture || null,
     });
 
-    setPreviewAvatar(profile.avatar_url || null); // existing avatar
+    console.log("Loaded profile into form:", profile);
+
+    setPreviewAvatar(profile.profile_picture || null); // existing profile picture
   }, [profile]);
 
   const handleChange = (e) => {
@@ -52,7 +54,7 @@ export default function FullProfile() {
   const handleAvatarChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setForm({ ...form, avatar: file });
+      setForm({ ...form, profile_picture: file });
       setPreviewAvatar(URL.createObjectURL(file));
     }
   };
@@ -67,12 +69,21 @@ export default function FullProfile() {
       formData.append("phone", form.phone || "");
       formData.append("full_name", form.full_name || "");
       formData.append("id_number", form.id_number || "");
-      if (form.avatar) {
-        formData.append("avatar", form.avatar);
+      formData.append("username", form.username || ""); // include username for completeness
+      if (form.profile_picture) {
+        formData.append("profile_picture", form.profile_picture);
       }
 
-      const res = await ApiSocket.put("/auth/update-profile", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      // const res = await ApiSocket.put("/landlord/post_profile", formData, {
+      //   headers: { "Content-Type": "multipart/form-data" },
+      // });
+      const res = await ApiSocket.put("/landlord/post_profile", formData);
+      console.log("Profile update response:", res);
+      console.log("Form data sent:", {
+        phone: form.phone,
+        full_name: form.full_name,
+        id_number: form.id_number,
+        profile_picture: form.profile_picture,
       });
 
       if (!res.success) {
@@ -81,7 +92,7 @@ export default function FullProfile() {
 
       setSuccess("Profile updated successfully");
       setIsEditing(false);
-      setForm({ ...form, avatar: null });
+      setForm({ ...form, profile_picture: null });
 
       // Refresh profile from backend
       await refreshProfile();
@@ -168,7 +179,14 @@ export default function FullProfile() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label>Username</Label>
-              <Input value={form.username} disabled={!isEditing} />
+              <Input
+              name="username"
+              value={form.username}
+              onChange={handleChange}
+              disabled={!isEditing}
+              placeholder="Enter username"
+            />
+                
             </div>
 
             <div>
@@ -208,7 +226,7 @@ export default function FullProfile() {
                   name="full_name"
                   value={form.full_name}
                   onChange={handleChange}
-                  disabled
+                  disabled={!isEditing}
                   placeholder="Enter your legal name"
                 />
               </div>
@@ -219,7 +237,7 @@ export default function FullProfile() {
                   name="id_number"
                   value={form.id_number}
                   onChange={handleChange}
-                  disabled
+                  disabled={!isEditing}
                   placeholder="National ID / Passport"
                 />
               </div>

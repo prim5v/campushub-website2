@@ -23,6 +23,7 @@ export default function DashboardHome({ properties, listings }) {
 
   const [message, setMessage] = useState("");
   const [runTour, setRunTour] = useState(false);
+  const [latestAnnouncement, setLatestAnnouncement] = useState(null);
 
   // ================= Guided Tour Steps =================
   const landlordTourSteps = [
@@ -92,22 +93,33 @@ export default function DashboardHome({ properties, listings }) {
   ];
 
   // ================= Fetch Dashboard Overview =================
-  useEffect(() => {
-    const getOverview = async () => {
-      try {
-        const res = await ApiSocket.get("/landlord/get_overview");
-        setData({
-          total_properties: res.total_properties || 0,
-          total_listings: res.total_listings || 0,
-        });
-        setMessage(res.message || "Welcome back to your dashboard!");
-      } catch (error) {
-        console.error("Failed to fetch overview data", error);
-      }
-    };
+useEffect(() => {
+  const getOverview = async () => {
+    try {
+      const res = await ApiSocket.get("/landlord/get_overview");
 
-    getOverview();
-  }, []);
+      setData({
+        total_properties: res.total_properties || 0,
+        total_listings: res.total_listings || 0,
+      });
+
+      // Save latest announcement
+      if (res.latest_announcement) {
+        setLatestAnnouncement(res.latest_announcement);
+      } else {
+        setLatestAnnouncement({
+          title: "Welcome back!",
+          message: "You have no recent announcements."
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch overview data", error);
+    }
+  };
+
+  getOverview();
+}, []);
+
 
   // ================= Run Tour Only on First Visit =================
   useEffect(() => {
@@ -181,18 +193,24 @@ export default function DashboardHome({ properties, listings }) {
       )}
 
       {/* ================= Optional welcome/info message ================= */}
-      {message && (
-        <div className="mb-4 p-4 bg-green-100 text-green-800 rounded flex items-center justify-between" id="welcome-message">
-          <span>{message}</span>
-          <button
-            onClick={() => setMessage("")}
-            className="ml-4 text-green-800 hover:text-green-900 font-bold text-lg leading-none"
-            aria-label="Dismiss message"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-      )}
+      {latestAnnouncement && (
+  <div
+    className="mb-4 p-4 bg-green-100 text-green-800 rounded flex flex-col md:flex-row md:items-center md:justify-between gap-2"
+    id="welcome-message"
+  >
+    <div className="flex flex-col">
+      <span className="font-semibold text-lg">{latestAnnouncement.title}</span>
+      <span>{latestAnnouncement.message}</span>
+    </div>
+    <button
+      onClick={() => setLatestAnnouncement(null)}
+      className="ml-4 text-green-800 hover:text-green-900 font-bold text-lg leading-none"
+      aria-label="Dismiss message"
+    >
+      <X className="w-5 h-5" />
+    </button>
+  </div>
+)}
 
       {/* ================= Overview Cards ================= */}
       <div
