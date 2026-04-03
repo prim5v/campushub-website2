@@ -5,11 +5,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useLandlord } from "@/contexts/LandlordContext";
+import { useDashboard } from "@/contexts/DashboardContext";
 import { useLocation } from "wouter";
 import ApiSocket from "@/utils/ApiSocket";
 import { useAuth } from "../../contexts/AuthContext";
 import { toast } from "react-hot-toast";
 import AuthPoller from "./AuthPoller";
+import AddListingModal from "@/components/landlord/AddListingModal";
+import AddPropertyModal from "@/components/landlord/AddPropertyModal";
+// import { type } from "os";
+// import { type } from "os";
 
 export default function DashboardHome({ properties, listings }) {
   const [data, setData] = useState({
@@ -18,12 +23,49 @@ export default function DashboardHome({ properties, listings }) {
   });
 
   const { authStatus } = useAuth();
-  const { lordstatus } = useLandlord();
+  const { lordstatus, badgeShown } = useLandlord();
+  // console.log("DashboardHome render - lordstatus:", lordstatus, "badgeShown:", badgeShown);
   const [, setLocation] = useLocation();
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [modalType, setModalType] = useState(null); // NEW
+  const ourLink = badgeShown ? "/badge" : "/get-badge";
+  
 
   const [message, setMessage] = useState("");
   const [runTour, setRunTour] = useState(false);
   const [latestAnnouncement, setLatestAnnouncement] = useState(null);
+  const showBadgeCard = lordstatus === "verified"; // adjust later when you track badge status
+  const { applied } = useDashboard();
+
+  const actionCards = [
+  {
+    show: applied === false, // only show if not applied for badge yet
+    title: "Get Verified Badge",
+    text: "Boost trust and get more student bookings by getting your verified badge.",
+    image: "/images/badge1.png",
+    buttonText: badgeShown ? "Continue Claiming Badge" : "Get Badge",
+    type: "badge",
+    link: badgeShown ? "/badge" : "/get-badge",
+  },
+  {
+    show: lordstatus === "verified" && data.total_properties === 0,
+    title: "Add Your First Property",
+    text: "Start by adding your first property so students can see what you offer.",
+    image: "/images/image3.jfif",
+    buttonText: "Add Property",
+    type: "property",
+    link: "/dashboard/properties",
+  },
+  {
+    show: lordstatus === "verified" && data.total_listings === 0,
+    title: "Create Your First Listing",
+    text: "Create a listing so your property becomes visible to students.",
+    image: "/images/image1.jfif",
+    buttonText: "Create Listing",
+    type: "listing",
+    link: "/dashboard/listings",
+  },
+];
 
   // ================= Guided Tour Steps =================
   const landlordTourSteps = [
@@ -246,6 +288,83 @@ useEffect(() => {
           </CardContent>
         </Card>
       </div>
+
+      {/* ================= Render cards ================= */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-6">
+  {actionCards
+    .filter((card) => card.show)
+    .map((card, index) => (
+      <div
+        key={index}
+        className="relative h-56 rounded-2xl overflow-hidden group cursor-pointer"
+        // onClick={() => setLocation(card.link)}
+      >
+        {/* Background Image */}
+        <img
+          src={card.image}
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        />
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+
+        {/* Content */}
+        <div className="relative z-10 h-full flex flex-col justify-end p-4 text-white">
+          <h3 className="text-lg font-semibold">{card.title}</h3>
+
+          <p className="text-sm text-white/80 mb-3">
+            {card.text}
+          </p>
+
+          <Button
+            size="sm"
+            className="w-fit bg-white text-black hover:bg-white/90"
+            onClick={(e) => {
+              e.stopPropagation(); // prevents double trigger
+              // setLocation(card.link);
+              if(card.type === "badge") {
+      setLocation(ourLink); // navigate immediately
+    } else {
+              setShowAddModal(true);
+              setModalType(card.type); // NEW
+    }
+              
+            }}
+          >
+            {card.buttonText}
+          </Button>
+        </div>
+      </div>
+    ))}
+    
+{modalType === "listing" && (
+  <AddListingModal
+    open={showAddModal}
+    onClose={() => setShowAddModal(false)}
+    onSuccess={() => fetchListings()}
+  />
+)}
+
+{modalType === "property" && (
+  <AddPropertyModal
+    open={showAddModal}
+    onClose={() => setShowAddModal(false)}
+    onSuccess={() => {
+      window.location.reload();
+    }}
+  />
+)}
+
+{/* {modalType === "badge" && (
+  setLocation(ourLink)
+)} */}
+
+</div>
+
+
+
+
     </>
   );
 }
+

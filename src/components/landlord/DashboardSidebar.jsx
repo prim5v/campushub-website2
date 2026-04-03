@@ -25,7 +25,7 @@ export default function DashboardSidebar({ active, setActive }) {
         id="dashboard-sidebar-title"
         className="text-xl font-bold mb-6"
       >
-        Landlord Panel
+       House provider Panel
       </h2>
 
       <div id="dashboard-sidebar-items" className="space-y-1">

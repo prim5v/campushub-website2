@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { X, Upload, Plus, Trash2 } from "lucide-react";
 import ApiSocket from "@/utils/ApiSocket";
+import { useDashboard } from "@/contexts/DashboardContext";
 
 export default function AddListingModal({ open, onClose, onSuccess }) {
   const [listingName, setListingName] = useState("");
@@ -21,6 +22,7 @@ export default function AddListingModal({ open, onClose, onSuccess }) {
   const [propertyId, setPropertyId] = useState("");
   const [price, setPrice] = useState("");
   const [images, setImages] = useState([]);
+  const { data } = useDashboard();
 
   // ✅ New fields
   const [availabilityStatus, setAvailabilityStatus] = useState("available");
@@ -153,6 +155,55 @@ export default function AddListingModal({ open, onClose, onSuccess }) {
   };
 
   if (!open) return null;
+if (properties.length === 0) {
+  return (
+    <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md p-6 rounded-2xl shadow-xl bg-white text-center">
+        <div className="flex flex-col items-center gap-4">
+          {/* Icon */}
+          <div className="bg-yellow-100 p-4 rounded-full">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 text-yellow-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+
+          {/* Heading */}
+          <h2 className="text-xl font-bold text-gray-800">
+            No Properties Found
+          </h2>
+
+          {/* Description */}
+          <p className="text-gray-600">
+            You need to add at least one property before you can create a listing.
+          </p>
+
+          {/* Action Button */}
+          <button
+            onClick={() => {
+              // Close this modal and open the Add Property flow
+              onClose();
+              setTimeout(() => {
+                // Assuming you have a parent handler to open AddPropertyModal
+                document.getElementById("open-add-property")?.click();
+              }, 100);
+            }}
+            className="px-6 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg shadow"
+          >
+            back
+          </button>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
 
   return (
     <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">

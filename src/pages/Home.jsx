@@ -254,7 +254,7 @@ useEffect(() => {
           <div className="max-w-2xl space-y-6">
             <Badge variant="secondary" className="gap-2 px-4 py-2">
               <Sparkles className="w-4 h-4 text-primary" />
-              Trusted by 0+ students
+              Trusted 
             </Badge>
             
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">

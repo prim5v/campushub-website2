@@ -45,6 +45,10 @@ import RoomRequestController from "./components/RoomRequestController";
 import RequestsPage from "./pages/Request";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import GetBadge from "./pages/GetBadge";
+import Badge from "./pages/Badge";
+import AddListingModal from "./components/landlord/AddListingModal";
+import LandlordListings from "./components/landlord/ListingsPanel";
 
 
 
@@ -77,6 +81,8 @@ if (authStatus === "unauthenticated") {
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/reset-password" component={ResetPassword} />
       <Route path="/room-request" component={RequestsPage} />
+      <Route path="/get-badge" component={GetBadge} />
+      <Route path="/badge" component={Badge} />
 
       {/* <Route component={Unauthorized}/> */}
 
@@ -136,6 +142,22 @@ if (authStatus === "authenticated") {
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms-of-service" component={TermsOfService} />
       <Route path="/room-request" component={RequestsPage} />
+      <Route path="/get-badge" component={GetBadge} />
+        <Route path="/badge">
+        <ProtectedRoute allowedRoles={["landlord"]}>
+          <Badge/>
+        </ProtectedRoute>
+      </Route>
+       <Route path="/dashboard/properties">
+        <ProtectedRoute allowedRoles={["landlord"]}>
+          <Badge/>
+        </ProtectedRoute>
+      </Route>
+       <Route path="/dashboard/listings">
+        <ProtectedRoute allowedRoles={["landlord"]}>
+          <LandlordListings/>
+        </ProtectedRoute>
+      </Route>
       <Route path="/landlord-signup">
         <LandlordSignUp />
       </Route>
@@ -222,6 +244,8 @@ if (authStatus === "authenticated") {
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/reset-password" component={ResetPassword} />
       <Route path="/room-request" component={RequestsPage} />
+      <Route path="/get-badge" component={GetBadge} />
+      <Route path="/badge" component={Badge} />
       <Route path="/landlord-signup">
         <LandlordSignUp />
       </Route>

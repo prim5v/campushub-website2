@@ -24,6 +24,11 @@ export const LandlordProvider = ({ children }) => {
     return localStorage.getItem("lordstatus") || LORD.PENDING;
   });
 
+  const [badgeShown, setBadgeShown] = useState(() => {
+    const shown = localStorage.getItem("badgeShown");
+    return shown === "true"; // convert string to boolean
+  });
+
   // fetch profile when user is available
   useEffect(() => {
     if (user) {
@@ -35,6 +40,12 @@ export const LandlordProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem("lordstatus", lordstatus);
   }, [lordstatus]);
+
+  // persist badgeShown
+  useEffect(() => {
+    localStorage.setItem("badgeShown", badgeShown.toString());
+  }, [badgeShown]);
+
 
   /* =========================
       GET FULL PROFILE
@@ -86,7 +97,9 @@ export const LandlordProvider = ({ children }) => {
     plans,
     setProfile,
     lordstatus,
+    badgeShown,
     setLordStatus,
+    setBadgeShown,
     refreshProfile: getProfile, // 👈 useful later
     getPlans,
   };

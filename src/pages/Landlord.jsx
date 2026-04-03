@@ -25,6 +25,8 @@ import { useRef } from "react";
 import { ApiSocket} from "@/utils/ApiSocket";
 import PageTracker from "../components/PageTracker";
 
+// import { Link } from "wouter";
+
 
 const benefits = [
   {
@@ -161,7 +163,7 @@ export default function Landlord() {
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-primary" />
-                0+ active landlords
+                active landlords
               </div>
             </div>
           </div>
@@ -260,6 +262,7 @@ export default function Landlord() {
             ))}
           </div>
 
+
           <div className="text-center mt-12">
             <Card className="inline-block border-primary/30 bg-primary/5">
               <CardContent className="p-6 flex items-center gap-4">
@@ -270,9 +273,13 @@ export default function Landlord() {
                     Physical inspection by our team. Increases trust and bookings.
                   </p>
                 </div>
-                <Button variant="outline" data-testid="button-get-verified">
-                  Get Verified
-                </Button>
+
+                <Link href="/get-badge">
+                  <Button variant="outline" data-testid="button-get-verified">
+                    Get Verified
+                  </Button>
+                </Link>
+
               </CardContent>
             </Card>
           </div>
@@ -306,7 +313,7 @@ export default function Landlord() {
           </div>
         </div>
       </section>
-
+{/* 
       <section className="py-20 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
@@ -334,7 +341,7 @@ export default function Landlord() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="py-20 bg-primary text-primary-foreground">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

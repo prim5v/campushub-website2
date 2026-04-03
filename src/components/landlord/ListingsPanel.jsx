@@ -9,6 +9,7 @@ import { MapPin, Plus, Pencil, Trash2, ImageIcon, Grid3X3, List, SlidersHorizont
 import AddListingModal from "@/components/landlord/AddListingModal";
 import ApiSocket from "@/utils/ApiSocket";
 import PageTracker from "../PageTracker";
+import DashboardSidebar from "./DashboardSidebar";
 
 export default function LandlordListings() {
   const [listings, setListings] = useState([]);
