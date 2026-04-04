@@ -29,6 +29,7 @@ import { LandlordProvider } from "@/contexts/LandlordContext";
 import { CookieConsentProvider } from "@/contexts/CookieConsentContext";
 import * as Sentry from "@sentry/react";
 import { DashboardProvider } from "./contexts/DashboardContext";
+import LocationProvider from "@/contexts/LocationContext";
 
 // Initialize Sentry (error reporting only, no tracing for now)
 Sentry.init({
@@ -48,9 +49,11 @@ root.render(
       <AuthProvider>
         <DashboardProvider>
         <LandlordProvider>
+          <LocationProvider>
           <Sentry.ErrorBoundary fallback={<div>Something went wrong. Please try again later.</div>}>
             <App />
           </Sentry.ErrorBoundary>
+        </LocationProvider>
         </LandlordProvider>
         </DashboardProvider>
       </AuthProvider>
