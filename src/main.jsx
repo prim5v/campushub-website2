@@ -37,6 +37,13 @@ Sentry.init({
   tracesSampleRate: 0, // Set to 0 since we are skipping performance tracing
   environment: process.env.NODE_ENV,
   sendDefaultPii: true, // optional, captures PII like IP
+  integrations: [
+    Sentry.replayIntegration()
+  ],
+  // session Replay
+  replaysSessionSampleRate: 1.0, // Record 10% of sessions for replay change to 0.1 in production and 1.0 for testing
+  replaysOnErrorSampleRate: 1.0, // Record all sessions that encounter an error
+
 });
 
 // Create root
