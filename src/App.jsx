@@ -49,6 +49,8 @@ import GetBadge from "./pages/GetBadge";
 import Badge from "./pages/Badge";
 import AddListingModal from "./components/landlord/AddListingModal";
 import LandlordListings from "./components/landlord/ListingsPanel";
+import Waitlist from "./pages/Waitlist";
+import { StudentApp } from "./components/student/App";
 
 
 
@@ -317,7 +319,8 @@ useEffect(() => {
 }, []);
 
 if (maintenance.loading) return <LoadingScreen />;
-if (maintenance.active ) return <MaintenanceScreen message={maintenance.message} />;
+// if (maintenance.active ) return <MaintenanceScreen message={maintenance.message} />;
+if (maintenance.active ) return <StudentApp/>;
 
   return (
     <QueryClientProvider client={queryClient}>
