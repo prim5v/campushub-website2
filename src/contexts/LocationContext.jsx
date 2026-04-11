@@ -1,13 +1,21 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-// import locationIllustration from "@assets/location_illustration.png"; // optional image
+import Lottie from "lottie-react";
+
+// import your animations
+import introAnim from "../../assets/lottie/location-intro.json";
+import loadingAnim from "../../assets/lottie/location-loading.json";
+import deniedAnim from "../../assets/lottie/location-denied.json";
+import successAnim from "../../assets/lottie/location-intro.json";
+
 
 const LocationContext = createContext(null);
 export const useLocation = () => useContext(LocationContext);
 
 export default function LocationProvider({ children }) {
   const [coordinates, setCoordinates] = useState(null);
-  const [status, setStatus] = useState("loading"); // loading | granted | denied
+  const [status, setStatus] = useState("checking");
+  // checking | intro | loading | granted | denied | done
 
   const requestLocation = () => {
     if (!navigator.geolocation) {
@@ -15,61 +23,135 @@ export default function LocationProvider({ children }) {
       return;
     }
 
+    setStatus("loading");
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setCoordinates({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
         });
+
         setStatus("granted");
+
+        setTimeout(() => {
+          setStatus("done");
+        }, 1000);
       },
-      (error) => {
+      () => {
         setStatus("denied");
-        console.error("Location error:", error);
       },
       { enableHighAccuracy: true }
     );
   };
 
+  // 🔥 SMART PERMISSION CHECK
   useEffect(() => {
-    requestLocation();
+    if (!navigator.permissions) {
+      // fallback (older browsers)
+      setStatus("intro");
+      return;
+    }
+
+    navigator.permissions
+      .query({ name: "geolocation" })
+      .then((result) => {
+        if (result.state === "granted") {
+          requestLocation(); // skip intro completely
+        } else if (result.state === "prompt") {
+          setStatus("intro");
+        } else if (result.state === "denied") {
+          setStatus("denied");
+        }
+
+        // listen for changes (advanced UX)
+        result.onchange = () => {
+          if (result.state === "granted") {
+            requestLocation();
+          }
+        };
+      })
+      .catch(() => {
+        setStatus("intro");
+      });
   }, []);
 
-  if (status === "loading") {
+  // ⏳ INITIAL CHECK
+  if (status === "checking") {
     return (
       <div className="h-screen flex items-center justify-center">
-        <p className="text-muted-foreground">Checking your location…</p>
+        <p className="text-muted-foreground">Preparing your experience…</p>
       </div>
     );
   }
 
+  // 🎯 INTRO (ONLY when needed)
+  if (status === "intro") {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center text-center px-6">
+        <Lottie animationData={introAnim} className="w-56 h-56" />
+
+        <h1 className="text-3xl font-bold mt-4">
+          Find rooms near your campus
+        </h1>
+
+        <p className="text-muted-foreground mt-3 max-w-md">
+          We use your location to show nearby verified student housing.
+        </p>
+
+        <Button size="lg" className="mt-6" onClick={requestLocation}>
+          Get Started
+        </Button>
+      </div>
+    );
+  }
+
+  // 🔄 LOADING
+  if (status === "loading") {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center">
+        <Lottie animationData={loadingAnim} className="w-40 h-40" />
+        <p className="text-muted-foreground mt-4">
+          Finding your location…
+        </p>
+      </div>
+    );
+  }
+
+  // ✅ SUCCESS
+  if (status === "granted") {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center">
+        <Lottie animationData={successAnim} className="w-40 h-40" />
+        <p className="mt-3 font-medium">Location found</p>
+      </div>
+    );
+  }
+
+  // ❌ DENIED
   if (status === "denied") {
     return (
-      <div className="h-screen flex flex-col items-center justify-center gap-6 px-4 text-center">
-        {/* {locationIllustration && (
-          <img
-            src={locationIllustration}
-            alt="Enable location"
-            className="w-48 h-48 object-contain"
-          />
-        )} */}
-        <h2 className="text-2xl font-bold">Enable Your Location</h2>
-        <p className="text-muted-foreground max-w-md">
-          CampusHub uses your location to show you <strong>nearby verified student rooms</strong> 
-          so you can find your next home faster and avoid long commutes.
+      <div className="h-screen flex flex-col items-center justify-center text-center px-6">
+        <Lottie animationData={deniedAnim} className="w-52 h-52" />
+
+        <h2 className="text-2xl font-bold mt-2">
+          Enable Location Access
+        </h2>
+
+        <p className="text-muted-foreground max-w-md mt-2">
+          Turn on location to see nearby listings.
         </p>
-        <Button size="lg" onClick={requestLocation}>
-          Enable Location
+
+        <Button size="lg" className="mt-6" onClick={requestLocation}>
+          Try Again
         </Button>
-        <p className="text-sm text-muted-foreground mt-2">
-          If you previously blocked location, click the 🔒 icon in your browser's address bar and allow location access, then click "Enable Location" again.
-        </p>
       </div>
     );
   }
 
+  // 🚀 APP
   return (
-    <LocationContext.Provider value={{ coordinates, status, requestLocation }}>
+    <LocationContext.Provider value={{ coordinates, requestLocation }}>
       {children}
     </LocationContext.Provider>
   );
