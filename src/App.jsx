@@ -85,6 +85,7 @@ if (authStatus === "unauthenticated") {
       <Route path="/room-request" component={RequestsPage} />
       <Route path="/get-badge" component={GetBadge} />
       <Route path="/badge" component={Badge} />
+      <Route path="/waitlist" component={StudentApp} />
 
       {/* <Route component={Unauthorized}/> */}
 
@@ -145,6 +146,7 @@ if (authStatus === "authenticated") {
       <Route path="/terms-of-service" component={TermsOfService} />
       <Route path="/room-request" component={RequestsPage} />
       <Route path="/get-badge" component={GetBadge} />
+      <Route path="/waitlist" component={StudentApp} />
         <Route path="/badge">
         <ProtectedRoute allowedRoles={["landlord"]}>
           <Badge/>
@@ -248,6 +250,7 @@ if (authStatus === "authenticated") {
       <Route path="/room-request" component={RequestsPage} />
       <Route path="/get-badge" component={GetBadge} />
       <Route path="/badge" component={Badge} />
+      <Route path="/waitlist" component={StudentApp} />
       <Route path="/landlord-signup">
         <LandlordSignUp />
       </Route>
@@ -319,8 +322,8 @@ useEffect(() => {
 }, []);
 
 if (maintenance.loading) return <LoadingScreen />;
-// if (maintenance.active ) return <MaintenanceScreen message={maintenance.message} />;
-if (maintenance.active ) return <StudentApp/>;
+if (maintenance.active ) return <MaintenanceScreen message={maintenance.message} />;
+// if (maintenance.active ) return <StudentApp/>;
 
   return (
     <QueryClientProvider client={queryClient}>
