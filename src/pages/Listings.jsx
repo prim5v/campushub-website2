@@ -184,6 +184,9 @@ useEffect(() => {
 
           rating: Number(l.rating?.average_rating || 0),
           reviews: Number(l.rating?.num_ratings || 0),
+
+          // status: l.status || "available",
+          status: l.status?.trim()?.toLowerCase() || "available",
         }));
 
 
@@ -202,39 +205,6 @@ useEffect(() => {
   }
 }, [coordinates]);
 
-
-//  if (loading || (!coordinates.latitude && !coordinates.longitude)) {
-//   return <SkeletonLoading />;
-// }
-
-
-
-
-
-
-// const generateListingsJSONLD = () => {
-//   return {
-//     "@context": "https://schema.org",
-//     "@type": "ItemList",
-//     "itemListElement": allRooms.map((room, index) => ({
-//       "@type": "ListItem",
-//       "position": index + 1,
-//       "url": `https://campushub-website.vercel.app/room/${room.id}`,
-//       "item": {
-//         "@type": "Product",
-//         "name": room.title,
-//         "image": room.image,
-//         "description": `Verified ${room.type} near campus at ${room.location}`,
-//         "offers": {
-//           "@type": "Offer",
-//           "price": room.price,
-//           "priceCurrency": "KES",
-//           "availability": "https://schema.org/InStock"
-//         }
-//       }
-//     }))
-//   };
-// };
 
 
 
