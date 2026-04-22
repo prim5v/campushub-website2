@@ -186,7 +186,7 @@ useEffect(() => {
           reviews: Number(l.rating?.num_ratings || 0),
 
           // status: l.status || "available",
-          status: l.status?.trim()?.toLowerCase() || "available",
+          status: l.availability_status?.trim()?.toLowerCase() || "available",
         }));
 
 
