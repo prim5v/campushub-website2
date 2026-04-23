@@ -1,4 +1,3 @@
-// RoomCard.jsx
 import React from "react";
 import { Card, CardContent } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
@@ -49,7 +48,10 @@ export function RoomCard({
   rating,
   reviews,
   status,
+  availability_date, // 👈 IMPORTANT
 }) {
+
+  const PHONE_NUMBER = "254117021554"; // 🔥 replace with your WhatsApp number
 
   const statusConfig = {
     rented: {
@@ -72,6 +74,11 @@ export function RoomCard({
       className: "text-purple-500/80 border-purple-500/40 bg-purple-500/10",
       disableAction: true,
     },
+    upcoming: {
+      label: "UPCOMING",
+      className: "text-blue-500/80 border-blue-500/40 bg-blue-500/10",
+      disableAction: false,
+    },
   };
 
   const currentStatus =
@@ -79,19 +86,48 @@ export function RoomCard({
 
   const isDisabled = currentStatus?.disableAction ?? false;
 
+  // 📅 format date
+  const formatDate = (d) => {
+    if (!d) return null;
+    const date = new Date(d);
+    return date.toLocaleDateString("en-US", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  const availabilityText = formatDate(availability_date);
+
+  // 📲 WhatsApp booking
+  const handleBooking = () => {
+    const message = `
+Hi, I want to book this room:
+
+🏠 Name: ${title}
+🆔 ID: ${id}
+💰 Rent: KES ${price?.toLocaleString?.()}/month
+📍 Location: ${location}
+🏷 Type: ${type}
+📅 Available on: ${availabilityText || "N/A"}
+
+Please confirm availability.
+    `.trim();
+
+    const url = `https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(message)}`;
+    window.open(url, "_blank");
+  };
+
   return (
-    <Card
-      className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg"
-      data-testid={`card-room-${id}`}
-    >
+    <Card className="group relative overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
+
       <div className="relative aspect-4/3 overflow-hidden">
 
-        {/* STATUS STAMP */}
+        {/* STATUS */}
         {currentStatus && (
           <div className="absolute inset-0 z-20 pointer-events-none flex items-center justify-center">
-            <div
-              className={`rotate-[-35deg] text-5xl font-extrabold tracking-widest border-4 px-6 py-2 rounded-xl ${currentStatus.className}`}
-            >
+            <div className={`rotate-[-35deg] text-5xl font-extrabold tracking-widest border-4 px-6 py-2 rounded-xl ${currentStatus.className}`}>
               {currentStatus.label}
             </div>
           </div>
@@ -146,11 +182,11 @@ export function RoomCard({
           <Heart className={`w-4 h-4 ${isFavorited ? "fill-current" : ""}`} />
         </button>
 
-        {/* FOOTER INFO */}
+        {/* FOOTER */}
         <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
           <p className="text-white/80 text-sm flex items-center gap-1">
             <MapPin className="w-3.5 h-3.5" />
-            {distance} from your current position
+            {distance} away
           </p>
 
           {rating && (
@@ -168,31 +204,27 @@ export function RoomCard({
       </div>
 
       {/* CONTENT */}
-      <CardContent className="p-4 space-y-3">
-        <div>
-          <h3 className="font-semibold text-lg line-clamp-1 group-hover:text-primary transition-colors">
-            {title}
-          </h3>
-          <p className="text-sm text-muted-foreground flex items-center gap-1 mt-0.5">
-            <MapPin className="w-3.5 h-3.5" />
-            {location}
-          </p>
-        </div>
+      <CardContent className="p-4 space-y-2">
 
-        <div className="flex gap-2">
-          {amenities.slice(0, 3).map((amenity) => (
-            <div
-              key={amenity}
-              className="flex items-center gap-1 text-xs text-muted-foreground bg-muted rounded-full px-2 py-1"
-            >
-              {amenityIcons[amenity.toLowerCase?.()]}
-              <span className="capitalize">{amenity}</span>
-            </div>
-          ))}
-        </div>
+        <h3 className="font-semibold text-lg line-clamp-1 group-hover:text-primary transition-colors">
+          {title}
+        </h3>
+
+        <p className="text-sm text-muted-foreground flex items-center gap-1">
+          <MapPin className="w-3.5 h-3.5" />
+          {location}
+        </p>
+
+        {/* UPCOMING DATE */}
+        {status?.toLowerCase() === "upcoming" && availabilityText && (
+          <p className="text-xs text-blue-400 font-medium">
+            Available on {availabilityText}
+          </p>
+        )}
 
         {/* PRICE + BUTTON */}
         <div className="flex items-center justify-between pt-2 border-t border-border/50">
+
           <div>
             <span className="text-xl font-bold text-primary">
               KES {price?.toLocaleString?.()}
@@ -200,7 +232,12 @@ export function RoomCard({
             <span className="text-sm text-muted-foreground">/month</span>
           </div>
 
-          {isDisabled ? (
+          {/* 🔥 MAIN LOGIC */}
+          {status?.toLowerCase() === "upcoming" ? (
+            <Button size="sm" onClick={handleBooking}>
+              Book Now
+            </Button>
+          ) : isDisabled ? (
             <Button size="sm" disabled className="opacity-50 cursor-not-allowed">
               Not Available
             </Button>
@@ -209,7 +246,9 @@ export function RoomCard({
               <Button size="sm">View Details</Button>
             </Link>
           )}
+
         </div>
+
       </CardContent>
     </Card>
   );
