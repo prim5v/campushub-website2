@@ -215,6 +215,7 @@ useEffect(() => {
           reviews: Number(l.rating?.num_ratings || 0),
 
           status: l.availability_status?.trim()?.toLowerCase() || "available",
+          availability_date: l.availability_date || null,
         }));
 
 

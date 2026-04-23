@@ -187,6 +187,7 @@ useEffect(() => {
 
           // status: l.status || "available",
           status: l.availability_status?.trim()?.toLowerCase() || "available",
+          availability_date: l.availability_date || null,
         }));
 
 
