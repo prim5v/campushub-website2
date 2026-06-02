@@ -15,7 +15,7 @@ import SkeletonLoading from "@/components/SkeletonLoading";
 import CountdownBanner from "@/components/CountdownBanner";
 import { Helmet } from "react-helmet"; // make sure you have react-helmet installed
 import listingsJSON from "../../public/listings.json";
-import { Helmet } from "react-helmet";
+
 import { 
   Search, 
   SlidersHorizontal, 
