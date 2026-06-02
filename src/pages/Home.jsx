@@ -235,7 +235,7 @@ useEffect(() => {
   }
 }, [coordinates]);
 
-
+// good
 //  if (loading || (!coordinates.latitude && !coordinates.longitude)) {
 //   return <SkeletonLoading />;
 // }
@@ -249,7 +249,7 @@ useEffect(() => {
             CampusHub Kenya | Verified Student Hostels, Bedsitters & Rentals
           </title>
 
-          <meta
+          <meta 
             name="description"
             content="Find verified hostels, bedsitters and student accommodation near universities in Kenya. Compare rooms, prices, amenities and locations on CampusHub."
           />
