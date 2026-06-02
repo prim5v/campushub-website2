@@ -82,6 +82,7 @@ const heroImages = [hero1, hero2, hero3];
 //   ApiSocket.get("/comrade/get_listings").then(console.log);
 // }, []);
 
+//cool
 
 export default function Home() {
    const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
