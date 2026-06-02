@@ -8,6 +8,7 @@ import { RoomCard } from "@/components/RoomCard";
 import LoadingScreen from "@/pages/Auth/LoadingScreen"
 import { ApiSocket} from "@/utils/ApiSocket";
 import SkeletonLoading from "@/components/SkeletonLoading";
+import { Helmet } from "react-helmet";
 import { 
   Search, 
   Shield, 
@@ -242,6 +243,38 @@ useEffect(() => {
 //  <PageTracker page="home" />
   return (
     <div className="min-h-screen bg-background">
+
+      <Helmet>
+          <title>
+            CampusHub Kenya | Verified Student Hostels, Bedsitters & Rentals
+          </title>
+
+          <meta
+            name="description"
+            content="Find verified hostels, bedsitters and student accommodation near universities in Kenya. Compare rooms, prices, amenities and locations on CampusHub."
+          />
+
+          <link
+            rel="canonical"
+            href="https://campushub.yreen.co.ke/"
+          />
+
+          <meta property="og:title" content="CampusHub Kenya" />
+          <meta
+            property="og:description"
+            content="Find verified student accommodation near universities in Kenya."
+          />
+          <meta
+            property="og:url"
+            content="https://campushub.yreen.co.ke/"
+          />
+          <meta
+            property="og:image"
+            content="https://campushub.yreen.co.ke/favicon.png"
+          />
+          <meta property="og:type" content="website" />
+        </Helmet>
+
       <PageTracker page="home" />
       <Navbar />
       

@@ -15,6 +15,7 @@ import SkeletonLoading from "@/components/SkeletonLoading";
 import CountdownBanner from "@/components/CountdownBanner";
 import { Helmet } from "react-helmet"; // make sure you have react-helmet installed
 import listingsJSON from "../../public/listings.json";
+import { Helmet } from "react-helmet";
 import { 
   Search, 
   SlidersHorizontal, 
@@ -211,6 +212,23 @@ useEffect(() => {
 
   return (
     <div className="min-h-screen bg-background">
+
+      <Helmet>
+        <title>
+          Student Rooms & Hostels Near Universities | CampusHub Kenya
+        </title>
+
+        <meta
+          name="description"
+          content="Browse verified student rooms, bedsitters, hostels and rentals near universities across Kenya."
+        />
+
+        <link
+          rel="canonical"
+          href="https://campushub.yreen.co.ke/listings"
+        />
+      </Helmet>
+  
       {allRooms.length > 0 && (
   <Helmet>
     <script type="application/ld+json">

@@ -2,36 +2,36 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
-    <loc>https://campushub-website.vercel.app/</loc>
+    <loc>https://campushub.yreen.co.ke/</loc>
     <priority>1.0</priority>
   </url>
 
   <url>
-    <loc>https://campushub-website.vercel.app/listings</loc>
+    <loc>https://campushub.yreen.co.ke/listings</loc>
   </url>
 
   <url>
-    <loc>https://campushub-website.vercel.app/room</loc>
+    <loc>https://campushub.yreen.co.ke/room</loc>
   </url>
 
   <url>
-    <loc>https://campushub-website.vercel.app/landlord</loc>
+    <loc>https://campushub.yreen.co.ke/landlord</loc>
   </url>
 
   <url>
-    <loc>https://campushub-website.vercel.app/landlord-signup</loc>
+    <loc>https://campushub.yreen.co.ke/landlord-signup</loc>
   </url>
 
   <url>
-    <loc>https://campushub-website.vercel.app/signin</loc>
+    <loc>https://campushub.yreen.co.ke/signin</loc>
   </url>
 
   <url>
-    <loc>https://campushub-website.vercel.app/signup</loc>
+    <loc>https://campushub.yreen.co.ke/signup</loc>
   </url>
 
   <url>
-    <loc>https://campushub-website.vercel.app/marketplace</loc>
+    <loc>https://campushub.yreen.co.ke/marketplace</loc>
   </url>
 
 </urlset>

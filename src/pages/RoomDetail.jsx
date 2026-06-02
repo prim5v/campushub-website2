@@ -695,7 +695,7 @@ const handleShare = () => {
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
   }}
 >
-  WhatsApp Landlord
+  WhatsApp 
 </Button>
 
             </div>
@@ -762,6 +762,7 @@ const handleShare = () => {
     </div>
   </div>
 )}
+
 
       <Footer />
     </div>
