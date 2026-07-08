@@ -111,8 +111,9 @@ export const AuthProvider = ({ children }) => {
 
     try {
       // console.log("[Auth][Signup] Sending request to /auth/signup");
-      const res = await ApiSocket.post("/auth/signup", { email, password, username, role, institution, acceptedTerms });
+      const response = await ApiSocket.post("/auth/signup", { email, password, username, role, institution, acceptedTerms });
       // console.log("[Auth][Signup] Raw response:", res);
+      const res = response?.data || response; 
 
       if (res?.status === "verify_otp") {
         // console.log("[Auth][Signup] OTP required for:", res.email);
@@ -122,6 +123,13 @@ export const AuthProvider = ({ children }) => {
 
         return { otpRequired: true, email: res.email };
       }
+      if(res?.status === "success"){
+        setUser(res.user);
+        setPendingEmail(null);
+        setAuthStatus(AUTH.AUTHENTICATED);
+        return true;
+      }
+
 
       // Detect email send failure
       if (res?.status === 500 || res?.error === "failed to send email") {
